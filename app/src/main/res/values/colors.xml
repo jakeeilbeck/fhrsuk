@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="colorDivider">#65524949</color>
+    <color name="background">#303030</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+
+    <color name="rating5">#388e3c</color>
+    <color name="rating4">#afb42b</color>
+    <color name="rating3">#fbc02d</color>
+    <color name="rating2">#f57c00</color>
+    <color name="rating1">#e64a18</color>
+    <color name="rating0">#d32f2f</color>
+    <color name="ratingNa">#455a64</color>
+
+</resources>

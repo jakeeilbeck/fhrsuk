@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">FHRSUK</string>
+
+    <string name="rating_exempt">Exempt</string>
+    <string name="rating_awaiting_publication">Awaiting Publication</string>
+    <string name="rating_awaiting_inspection">Awaiting Inspection</string>
+    <string name="rating_pass">Pass</string>
+
+    <string name="hint_restaurant">restaurant or establishment…</string>
+    <string name="hint_location">street or town…</string>
+
+    <string name="button_search">Search</string>
+    <string name="search_missing_text">Missing text! Please enter text into both fields</string>
+    <string name="response_no_data_found">Nothing found!</string>
+    <string name="response_no_connection">No internet connection!</string>
+
+    <string name="permission_rationale">Location permission necessary for nearby restaurant ratings</string>
+    <string name="permission_denied_explanation">Location permission needed!</string>
+    <string name="settings">Permission Settings</string>
+</resources>

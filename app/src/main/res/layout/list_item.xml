@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:Tools="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <TextView
+        android:id="@+id/rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/square_bg"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        Tools:layout_constraintStart_toStartOf="parent"
+        Tools:layout_constraintTop_toTopOf="parent"
+        tools:text="5"
+        android:shadowColor="@color/black"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="1"/>
+
+
+    <TextView
+        android:id="@+id/name"
+        style="@style/textHeading"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:singleLine="false"
+        Tools:layout_constraintEnd_toStartOf="@+id/inspection_date"
+        Tools:layout_constraintStart_toEndOf="@+id/rating"
+        Tools:layout_constraintTop_toTopOf="parent"
+        tools:text="Restaurant Name" />
+
+    <TextView
+        android:id="@+id/address1"
+        style="@style/textSubHeading"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:ellipsize="end"
+        android:singleLine="false"
+        Tools:layout_constraintStart_toEndOf="@+id/rating"
+        Tools:layout_constraintTop_toBottomOf="@+id/name"
+        tools:text="Address line 1" />
+
+    <TextView
+        android:id="@+id/address2"
+        style="@style/textSubHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        Tools:layout_constraintStart_toEndOf="@+id/rating"
+        Tools:layout_constraintTop_toBottomOf="@+id/address1"
+        tools:text="Address line 2" />
+
+    <TextView
+        android:id="@+id/postcode"
+        style="@style/textSubHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        Tools:layout_constraintStart_toEndOf="@+id/address2"
+        Tools:layout_constraintTop_toBottomOf="@+id/address1"
+        tools:text="Post Code" />
+
+    <TextView
+        android:id="@+id/inspection_date"
+        style="@style/textAdditionalInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:textAlignment="textEnd"
+        Tools:layout_constraintEnd_toEndOf="parent"
+        Tools:layout_constraintTop_toTopOf="parent"
+        tools:text="Date" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/colorDivider"
+        Tools:layout_constraintBottom_toBottomOf="parent"
+        Tools:layout_constraintEnd_toEndOf="parent"
+        Tools:layout_constraintStart_toStartOf="parent"
+        Tools:layout_constraintTop_toBottomOf="@+id/address2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
