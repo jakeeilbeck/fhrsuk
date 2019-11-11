@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.fhrsuk.EstablishmentAdapter
 import com.android.fhrsuk.R
 import com.android.fhrsuk.models.EstablishmentDetail
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -30,6 +31,7 @@ class SearchFragment : Fragment() {
     private lateinit var searchLocationView: EditText
     private lateinit var searchButton: Button
     private lateinit var progressBar: ProgressBar
+    private lateinit var fabUp: FloatingActionButton
 
     private lateinit var searchRestaurantName: String
     private lateinit var searchLocation: String
@@ -65,12 +67,16 @@ class SearchFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
+        fabUp = view.findViewById(R.id.fab_up)
+        fabUp.hide()
+
         searchButton.setOnClickListener {
 
             showProgressBar(true)
             searchRestaurantName = searchNameView.text.toString().trim()
             searchLocation = searchLocationView.text.toString().trim()
 
+            //show snackbar if either search query is empty
             if (searchRestaurantName.isEmpty() || searchLocation.isEmpty()) {
                 Snackbar.make(
                     this.view!!,
@@ -95,6 +101,24 @@ class SearchFragment : Fragment() {
                     })
             }
         }
+
+        // Show/hide the fab button after scrolled passed ~1 page of results
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (recyclerView.computeVerticalScrollOffset() > 1500) {
+                    fabUp.show()
+                } else {
+                    fabUp.hide()
+                }
+            }
+        })
+
+        //scroll to top of list on click
+        fabUp.setOnClickListener {
+            recyclerView.scrollToPosition(0)
+        }
+
     }
 
     private fun showProgressBar(setVisible: Boolean) {
