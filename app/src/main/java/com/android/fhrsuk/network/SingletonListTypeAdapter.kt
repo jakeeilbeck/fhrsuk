@@ -15,7 +15,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 //https://stackoverflow.com/a/47420751
-//necessary helper class because if json api response contains 1 items it is a single object
+//necessary helper class because if json api response contains 1 item it is a single object
 //if the response is more than 1 item then it is a list of objects
 //this adapter converts any single responses to a list of 1 to match the model classes
 class SingletonListTypeAdapter<T>(private val delegate: TypeAdapter<T>) :

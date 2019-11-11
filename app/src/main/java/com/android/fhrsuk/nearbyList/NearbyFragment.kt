@@ -94,6 +94,7 @@ class NearbyFragment : Fragment() {
             }
         })
 
+        //scroll to top of list on click
         fabUp.setOnClickListener {
             recyclerView.scrollToPosition(0)
         }

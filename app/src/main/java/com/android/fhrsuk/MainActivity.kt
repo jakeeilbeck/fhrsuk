@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //options menu used for navigation between fragments
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_switch_fragment, menu)
         return super.onCreateOptionsMenu(menu)
@@ -67,6 +68,8 @@ class MainActivity : AppCompatActivity() {
         return super.onPrepareOptionsMenu(menu)
     }
 
+
+    //show/hide fragments on navigation selection
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         when {

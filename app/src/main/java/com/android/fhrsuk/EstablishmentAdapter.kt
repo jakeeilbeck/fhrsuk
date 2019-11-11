@@ -31,6 +31,7 @@ class EstablishmentAdapter(
         viewHolder.address2TextView.text = establishmentDetail.addressLine2
         viewHolder.postcodeTextView.text = establishmentDetail.postCode
 
+        //display N/A when rating isn't available, and show the reason why where the date would otherwise be
         when {
             establishmentDetail.ratingValue == "Exempt" -> {
                 viewHolder.ratingTextView.text = "N/A"
@@ -95,6 +96,7 @@ class EstablishmentAdapter(
     }
 
 
+    //set rating background colour based on rating value
     private fun getRatingColour(rating: String): Int {
         val ratingColourResourceId: Int = when (rating) {
             "0" -> R.color.rating0
