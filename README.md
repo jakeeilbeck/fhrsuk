@@ -13,3 +13,5 @@ This project includes:
 - RecyclerView
 - Paging Library
 - Location Services
+
+![Screenshot of nearby view](https://i.imgur.com/ajEPag5.png) ![Screenshot of search view](https://i.imgur.com/3Lw334C.png)
