@@ -27,8 +27,8 @@ class SearchFragment : Fragment() {
 
     private lateinit var searchViewModel: SearchViewModel
 
-    private lateinit var searchNameView: EditText
-    private lateinit var searchLocationView: EditText
+    private lateinit var searchNameText: EditText
+    private lateinit var searchLocationText: EditText
     private lateinit var searchButton: Button
     private lateinit var progressBar: ProgressBar
     private lateinit var fabUp: FloatingActionButton
@@ -49,8 +49,8 @@ class SearchFragment : Fragment() {
     ): View {
         val view = inflater.inflate(R.layout.fragment_search, container, false)
 
-        searchNameView = view.findViewById(R.id.edit_text_name)
-        searchLocationView = view.findViewById(R.id.edit_text_location)
+        searchNameText = view.findViewById(R.id.edit_text_name)
+        searchLocationText = view.findViewById(R.id.edit_text_location)
         searchButton = view.findViewById(R.id.button_search)
 
         return view
@@ -73,8 +73,8 @@ class SearchFragment : Fragment() {
         searchButton.setOnClickListener {
 
             showProgressBar(true)
-            searchRestaurantName = searchNameView.text.toString().trim()
-            searchLocation = searchLocationView.text.toString().trim()
+            searchRestaurantName = searchNameText.text.toString().trim()
+            searchLocation = searchLocationText.text.toString().trim()
 
             //show snackbar if either search query is empty
             if (searchRestaurantName.isEmpty() || searchLocation.isEmpty()) {
@@ -99,6 +99,10 @@ class SearchFragment : Fragment() {
                             showProgressBar(false)
                         }
                     })
+
+                //clear editText focus on search
+                searchNameText.clearFocus()
+                searchLocationText.clearFocus()
             }
         }
 
