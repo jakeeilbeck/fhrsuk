@@ -44,7 +44,7 @@ dependencies {
     implementation "androidx.paging:paging-runtime:2.1.0"
 
     //recyclerView
-    implementation "androidx.recyclerview:recyclerview:1.0.0"
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
 
     //location
     implementation 'com.google.android.gms:play-services-location:17.0.0'

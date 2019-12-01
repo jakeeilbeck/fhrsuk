@@ -3,9 +3,9 @@ package com.android.fhrsuk.nearbyList
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
-import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
@@ -24,15 +24,8 @@ import com.android.fhrsuk.BuildConfig
 import com.android.fhrsuk.EstablishmentAdapter
 import com.android.fhrsuk.R
 import com.android.fhrsuk.models.EstablishmentDetail
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices.getFusedLocationProviderClient
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-
-private const val UPDATE_INTERVAL: Long = 10 * 1000  //10 secs
-private const val FASTEST_INTERVAL: Long = 2000 //2 sec
 
 private const val PERMISSIONS_REQUEST_CODE = 11
 private const val TAG = "NearbyFragment"
@@ -48,7 +41,7 @@ class NearbyFragment : Fragment() {
 
     private lateinit var nearbyViewModel: NearbyViewModel
 
-    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationServices: LocationServices
 
     private var firstCall: Boolean = true
 
@@ -58,6 +51,24 @@ class NearbyFragment : Fragment() {
         super.onCreate(savedInstanceState)
         retainInstance = true
         nearbyViewModel = ViewModelProviders.of(this).get(NearbyViewModel::class.java)
+
+        //Observer for location updates
+        val locationObserver = Observer<Location> { newLocation ->
+
+            nearbyViewModel.setLocation(newLocation)
+            nearbyViewModel.init()
+
+            //Only the first request should be triggered by location updates
+            //subsequent requests are used on swipeRefresh
+            if (firstCall) {
+                init()
+                firstCall = false
+            }
+        }
+
+        locationServices = LocationServices(this.requireActivity())
+        locationServices.startLocationUpdates()
+        locationServices.location.observe(this, locationObserver)
     }
 
     override fun onCreateView(
@@ -113,43 +124,8 @@ class NearbyFragment : Fragment() {
             showProgressBar(false)
             requestPermissions()
         } else {
-            startLocationUpdates()
+            locationServices.startLocationUpdates()
         }
-    }
-
-    private fun startLocationUpdates() {
-
-        Log.i(TAG, "Location updates started")
-
-        // Create the location request to start receiving updates
-        locationRequest = LocationRequest()
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = UPDATE_INTERVAL
-        locationRequest.fastestInterval =
-            FASTEST_INTERVAL
-
-        getFusedLocationProviderClient(this.requireContext()).requestLocationUpdates(
-            locationRequest, object : LocationCallback() {
-                override fun onLocationResult(locationResult: LocationResult?) {
-
-                    Log.i(
-                        "NearbyFrag",
-                        "Long: ${locationResult!!.lastLocation.longitude} Lat: ${locationResult.lastLocation.latitude}"
-                    )
-
-                    nearbyViewModel.setLocation(locationResult.lastLocation)
-                    nearbyViewModel.init()
-
-                    //Only the first request should be triggered by location updates
-                    //subsequent requests are used on swipeRefresh
-                    if (firstCall) {
-                        init()
-                        firstCall = false
-                    }
-                }
-            },
-            Looper.myLooper()
-        )
     }
 
     //Called initially and on each swipeRefresh
@@ -225,7 +201,7 @@ class NearbyFragment : Fragment() {
 
                 // Permission granted.
                 (grantResults[0] == PackageManager.PERMISSION_GRANTED) -> {
-                    startLocationUpdates()
+                    locationServices.startLocationUpdates()
                     showProgressBar(true)
                     Log.i(TAG, "Permission granted")
                 }
@@ -261,5 +237,4 @@ class NearbyFragment : Fragment() {
         }
         snackbar.show()
     }
-
 }
