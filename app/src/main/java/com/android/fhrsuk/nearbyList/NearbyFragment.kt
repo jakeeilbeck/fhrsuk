@@ -58,8 +58,7 @@ class NearbyFragment : Fragment() {
             nearbyViewModel.setLocation(newLocation)
             nearbyViewModel.init()
 
-            //Only the first request should be triggered by location updates
-            //subsequent requests are used on swipeRefresh
+            //Only the first request should be triggered by location update
             if (firstCall) {
                 init()
                 firstCall = false
@@ -129,6 +128,7 @@ class NearbyFragment : Fragment() {
     }
 
     //Called initially and on each swipeRefresh
+    //Refreshes views with new data
     private fun init() {
         nearbyViewModel.itemPagedList.observe(this,
             Observer<PagedList<EstablishmentDetail>> { items ->
@@ -138,9 +138,9 @@ class NearbyFragment : Fragment() {
                     recyclerView.adapter = adapter
                     adapter.submitList(items)
                     adapter.notifyDataSetChanged()
-                    showProgressBar(false)
                 }
             })
+        showProgressBar(false)
     }
 
     private fun showProgressBar(setVisible: Boolean) {

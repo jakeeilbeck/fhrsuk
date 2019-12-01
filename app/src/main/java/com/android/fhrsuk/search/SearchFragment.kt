@@ -19,7 +19,6 @@ import com.android.fhrsuk.models.EstablishmentDetail
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 
-
 class SearchFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
@@ -89,6 +88,7 @@ class SearchFragment : Fragment() {
                 searchViewModel.setSearchTerms(searchRestaurantName, searchLocation)
                 searchViewModel.init()
 
+                //Refreshes views with new data
                 searchViewModel.itemPagedList.observe(this,
                     Observer<PagedList<EstablishmentDetail>> { items ->
                         items?.let {
@@ -96,9 +96,10 @@ class SearchFragment : Fragment() {
                             recyclerView.adapter = adapter
                             adapter.submitList(items)
                             adapter.notifyDataSetChanged()
-                            showProgressBar(false)
                         }
                     })
+
+                showProgressBar(false)
 
                 //clear editText focus on search
                 searchNameText.clearFocus()
@@ -106,7 +107,7 @@ class SearchFragment : Fragment() {
             }
         }
 
-        // Show/hide the fab button after scrolled passed ~1 page of results
+        //show/hide the fab button after scrolled passed ~1 page of results
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
