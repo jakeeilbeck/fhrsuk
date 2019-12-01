@@ -1,7 +1,7 @@
 package com.android.fhrsuk
 
 //TODO ProgressBar disappears too soon
-//TODO Move location updates to separate class
+//TODO Add ViewPager to swipe between fragments
 
 import android.os.Bundle
 import android.view.Menu
@@ -67,7 +67,6 @@ class MainActivity : AppCompatActivity() {
 
         return super.onPrepareOptionsMenu(menu)
     }
-
 
     //show/hide fragments on navigation selection
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
