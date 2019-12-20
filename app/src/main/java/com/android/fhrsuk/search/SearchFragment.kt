@@ -21,20 +21,8 @@ import com.google.android.material.snackbar.Snackbar
 
 class SearchFragment : Fragment() {
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: EstablishmentAdapter
-
     private lateinit var searchViewModel: SearchViewModel
-
-    private lateinit var searchNameText: EditText
-    private lateinit var searchLocationText: EditText
-    private lateinit var searchButton: Button
     private lateinit var progressBar: ProgressBar
-    private lateinit var fabUp: FloatingActionButton
-
-    private lateinit var searchRestaurantName: String
-    private lateinit var searchLocation: String
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,27 +34,31 @@ class SearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val view = inflater.inflate(R.layout.fragment_search, container, false)
 
-        searchNameText = view.findViewById(R.id.edit_text_name)
-        searchLocationText = view.findViewById(R.id.edit_text_location)
-        searchButton = view.findViewById(R.id.button_search)
-
-        return view
+        return inflater.inflate(R.layout.fragment_search, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val searchNameText: EditText = view.findViewById(R.id.edit_text_name)
+        val searchLocationText: EditText = view.findViewById(R.id.edit_text_location)
+        val searchButton: Button = view.findViewById(R.id.button_search)
+
+        val fabUp: FloatingActionButton = view.findViewById(R.id.fab_up)
+
+        var searchRestaurantName: String
+        var searchLocation: String
+
+        val adapter = EstablishmentAdapter(requireContext())
+        val recyclerView: RecyclerView = view.findViewById(R.id.search_recyclerView)
+
         progressBar = view.findViewById(R.id.progressbar_search)
         showProgressBar(false)
 
-        adapter = EstablishmentAdapter(requireContext())
-        recyclerView = view.findViewById(R.id.search_recyclerView) as RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
-        fabUp = view.findViewById(R.id.fab_up)
         fabUp.hide()
 
         searchButton.setOnClickListener {

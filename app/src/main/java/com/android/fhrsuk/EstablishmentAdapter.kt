@@ -32,28 +32,26 @@ class EstablishmentAdapter(
         viewHolder.postcodeTextView.text = establishmentDetail.postCode
 
         //display N/A when rating isn't available, and show the reason why where the date would otherwise be
-        when {
-            establishmentDetail.ratingValue == "Exempt" -> {
+        when (establishmentDetail.ratingValue) {
+            "Exempt" -> {
                 viewHolder.ratingTextView.text = "N/A"
                 viewHolder.inspectionDateTextView.text = context.getString(R.string.rating_exempt)
             }
-            establishmentDetail.ratingValue == "AwaitingPublication" ||
-                    establishmentDetail.ratingValue == "Awaiting Publication" -> {
+            "AwaitingPublication", "Awaiting Publication" -> {
                 viewHolder.ratingTextView.text = "N/A"
                 viewHolder.inspectionDateTextView.text =
                     context.getString(R.string.rating_awaiting_publication)
             }
-            establishmentDetail.ratingValue == "AwaitingInspection" ||
-                    establishmentDetail.ratingValue == "Awaiting Inspection" -> {
+            "AwaitingInspection", "Awaiting Inspection" -> {
                 viewHolder.ratingTextView.text = "N/A"
                 viewHolder.inspectionDateTextView.text =
                     context.getString(R.string.rating_awaiting_inspection)
             }
-            establishmentDetail.ratingValue == "Pass and Eat Safe" -> {
+            "Pass and Eat Safe" -> {
                 viewHolder.ratingTextView.text = context.getString(R.string.rating_pass)
                 viewHolder.inspectionDateTextView.text = establishmentDetail.ratingDate
             }
-            establishmentDetail.ratingValue == "Improvement Required" -> {
+            "Improvement Required" -> {
                 viewHolder.ratingTextView.text = "3"
                 viewHolder.inspectionDateTextView.text = establishmentDetail.ratingDate
             }
@@ -87,12 +85,12 @@ class EstablishmentAdapter(
 
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var nameTextView: TextView = itemView.findViewById(R.id.name)
-        var ratingTextView: TextView = itemView.findViewById(R.id.rating)
-        var address1TextView: TextView = itemView.findViewById(R.id.address1)
-        var address2TextView: TextView = itemView.findViewById(R.id.address2)
-        var postcodeTextView: TextView = itemView.findViewById(R.id.postcode)
-        var inspectionDateTextView: TextView = itemView.findViewById(R.id.inspection_date)
+        val nameTextView: TextView = itemView.findViewById(R.id.name)
+        val ratingTextView: TextView = itemView.findViewById(R.id.rating)
+        val address1TextView: TextView = itemView.findViewById(R.id.address1)
+        val address2TextView: TextView = itemView.findViewById(R.id.address2)
+        val postcodeTextView: TextView = itemView.findViewById(R.id.postcode)
+        val inspectionDateTextView: TextView = itemView.findViewById(R.id.inspection_date)
     }
 
 

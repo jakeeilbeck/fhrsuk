@@ -19,19 +19,21 @@ class NearbyViewModel(application: Application) : AndroidViewModel(application) 
     private lateinit var itemDataSourceFactory: NearbyDataSourceFactory
 
     fun init() {
+
         itemDataSourceFactory = NearbyDataSourceFactory(
             this.getApplication(),
             longitude,
             latitude
         )
-        this.liveDataSource = itemDataSourceFactory.getItemLiveDataSource()
+
+        liveDataSource = itemDataSourceFactory.getItemLiveDataSource()
 
         val config = PagedList.Config.Builder()
             .setEnablePlaceholders(false)
             .setPageSize(50)
             .build()
 
-        this.itemPagedList = LivePagedListBuilder(itemDataSourceFactory, config).build()
+        itemPagedList = LivePagedListBuilder(itemDataSourceFactory, config).build()
     }
 
     fun setLocation(location: Location) {

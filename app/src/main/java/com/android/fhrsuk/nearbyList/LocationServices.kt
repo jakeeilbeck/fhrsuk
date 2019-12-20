@@ -17,7 +17,7 @@ private const val TAG = "LocationServices"
 
 class LocationServices(private val context: Context) {
 
-    private lateinit var locationRequest: LocationRequest
+    //private lateinit var locationRequest: LocationRequest
     val location = MutableLiveData<Location>()
 
     fun startLocationUpdates() {
@@ -25,7 +25,7 @@ class LocationServices(private val context: Context) {
         Log.i(TAG, "Location updates started")
 
         // Create the location request to start receiving updates
-        locationRequest = LocationRequest()
+        val locationRequest = LocationRequest()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = UPDATE_INTERVAL
         locationRequest.fastestInterval = FASTEST_INTERVAL

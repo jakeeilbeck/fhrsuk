@@ -37,7 +37,6 @@ class NearbyFragment : Fragment() {
 
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var progressBar: ProgressBar
-    private lateinit var fabUp: FloatingActionButton
 
     private lateinit var nearbyViewModel: NearbyViewModel
 
@@ -84,8 +83,9 @@ class NearbyFragment : Fragment() {
 
         swipeRefresh = view.findViewById(R.id.swipe_refresh)
         progressBar = view.findViewById(R.id.progressbar_list)
+        val fabUp: FloatingActionButton = view.findViewById(R.id.fab_up)
+
         showProgressBar(true)
-        fabUp = view.findViewById(R.id.fab_up)
         fabUp.hide()
 
         adapter = EstablishmentAdapter(requireContext())
