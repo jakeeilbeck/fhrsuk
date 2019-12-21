@@ -16,4 +16,4 @@ This project includes:
 - Location Services
 - ViewPager2
 
-![Screenshot of nearby view](https://i.imgur.com/ajEPag5.png) ![Screenshot of search view](https://i.imgur.com/3Lw334C.png)
+![Screenshot of nearby view](https://i.imgur.com/dAem2Up.png) ![Screenshot of search view](https://i.imgur.com/0UB7rM1.png)
