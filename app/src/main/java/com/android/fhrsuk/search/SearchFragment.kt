@@ -67,36 +67,29 @@ class SearchFragment : Fragment() {
             searchRestaurantName = searchNameText.text.toString().trim()
             searchLocation = searchLocationText.text.toString().trim()
 
-            //show snackbar if either search query is empty
-            if (searchRestaurantName.isEmpty() || searchLocation.isEmpty()) {
-                Snackbar.make(
-                    this.view!!,
-                    getString(R.string.search_missing_text),
-                    Snackbar.LENGTH_LONG
-                ).show()
-                showProgressBar(false)
-            } else {
+            //Replace empty search term with wildcard
+            if(searchRestaurantName.isEmpty()) searchRestaurantName = "^"
+            if(searchLocation.isEmpty()) searchLocation = "^"
 
-                searchViewModel.setSearchTerms(searchRestaurantName, searchLocation)
-                searchViewModel.init()
+            searchViewModel.setSearchTerms(searchRestaurantName, searchLocation)
+            searchViewModel.init()
 
-                //Refreshes views with new data
-                searchViewModel.itemPagedList.observe(this,
-                    Observer<PagedList<EstablishmentDetail>> { items ->
-                        items?.let {
+            //Refreshes views with new data
+            searchViewModel.itemPagedList.observe(this,
+                Observer<PagedList<EstablishmentDetail>> { items ->
+                    items?.let {
 
-                            recyclerView.adapter = adapter
-                            adapter.submitList(items)
-                            adapter.notifyDataSetChanged()
-                        }
-                    })
+                        recyclerView.adapter = adapter
+                        adapter.submitList(items)
+                        adapter.notifyDataSetChanged()
+                    }
+                })
 
-                showProgressBar(false)
+            showProgressBar(false)
 
-                //clear editText focus on search
-                searchNameText.clearFocus()
-                searchLocationText.clearFocus()
-            }
+            //clear editText focus on search
+            searchNameText.clearFocus()
+            searchLocationText.clearFocus()
         }
 
         //show/hide the fab button after scrolled passed ~1 page of results
