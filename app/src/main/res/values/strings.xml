@@ -17,4 +17,9 @@
     <string name="permission_rationale">Location permission necessary for nearby restaurant ratings</string>
     <string name="permission_denied_explanation">Location permission needed!</string>
     <string name="settings">Permission Settings</string>
+
+    <string name="additional_business_type">Business Type</string>
+    <string name="additional_local_authority_title">Local Authority</string>
+    <string name="additional_local_authority_website_title">Local Authority Website</string>
+    <string name="additional_local_authority_email_title">Local Authority Email</string>
 </resources>

@@ -90,6 +90,10 @@ class NearbyFragment : Fragment() {
 
         adapter = EstablishmentAdapter(requireContext())
         recyclerView = view.findViewById(R.id.list_recyclerView) as RecyclerView
+
+        //stops 'blinking' effect when item is clicked
+        recyclerView.itemAnimator?.changeDuration = 0
+
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         // Show/hide the fab button after scrolled passed ~1 page of results

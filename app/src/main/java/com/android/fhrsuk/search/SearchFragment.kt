@@ -17,7 +17,6 @@ import com.android.fhrsuk.EstablishmentAdapter
 import com.android.fhrsuk.R
 import com.android.fhrsuk.models.EstablishmentDetail
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 
 class SearchFragment : Fragment() {
 
@@ -54,7 +53,10 @@ class SearchFragment : Fragment() {
         val recyclerView: RecyclerView = view.findViewById(R.id.search_recyclerView)
 
         progressBar = view.findViewById(R.id.progressbar_search)
-        showProgressBar(false)
+        //showProgressBar(false)
+
+        //stops 'blinking' effect when item is clicked
+        recyclerView.itemAnimator?.changeDuration = 0
 
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
@@ -64,12 +66,14 @@ class SearchFragment : Fragment() {
         searchButton.setOnClickListener {
 
             showProgressBar(true)
+            recyclerView.visibility = View.INVISIBLE
+
             searchRestaurantName = searchNameText.text.toString().trim()
             searchLocation = searchLocationText.text.toString().trim()
 
             //Replace empty search term with wildcard
-            if(searchRestaurantName.isEmpty()) searchRestaurantName = "^"
-            if(searchLocation.isEmpty()) searchLocation = "^"
+            if (searchRestaurantName.isEmpty()) searchRestaurantName = "^"
+            if (searchLocation.isEmpty()) searchLocation = "^"
 
             searchViewModel.setSearchTerms(searchRestaurantName, searchLocation)
             searchViewModel.init()
@@ -82,10 +86,13 @@ class SearchFragment : Fragment() {
                         recyclerView.adapter = adapter
                         adapter.submitList(items)
                         adapter.notifyDataSetChanged()
-                    }
-                })
 
-            showProgressBar(false)
+                        showProgressBar(false)
+                        recyclerView.visibility = View.VISIBLE
+
+                    }
+                }
+            )
 
             //clear editText focus on search
             searchNameText.clearFocus()

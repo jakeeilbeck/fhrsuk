@@ -1,99 +1,244 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:Tools="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
+    android:id="@+id/card_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="4dp"
+    Tools:cardBackgroundColor="@color/colorPrimary"
+    Tools:cardCornerRadius="4dp"
+    Tools:cardElevation="1dp"
+    Tools:layout_constraintBottom_toBottomOf="parent"
+    Tools:layout_constraintEnd_toEndOf="parent"
+    Tools:layout_constraintStart_toStartOf="parent"
+    Tools:layout_constraintTop_toTopOf="parent">
 
-
-    <TextView
-        android:id="@+id/rating"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/square_bg"
-        android:gravity="center"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        Tools:layout_constraintStart_toStartOf="parent"
-        Tools:layout_constraintTop_toTopOf="parent"
-        tools:text="5"
-        android:shadowColor="@color/black"
-        android:shadowDx="1"
-        android:shadowDy="1"
-        android:shadowRadius="1"/>
-
-
-    <TextView
-        android:id="@+id/name"
-        style="@style/textHeading"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:ellipsize="end"
-        android:singleLine="false"
-        Tools:layout_constraintEnd_toStartOf="@+id/inspection_date"
-        Tools:layout_constraintStart_toEndOf="@+id/rating"
-        Tools:layout_constraintTop_toTopOf="parent"
-        tools:text="Restaurant Name" />
-
-    <TextView
-        android:id="@+id/address1"
-        style="@style/textSubHeading"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:ellipsize="end"
-        android:singleLine="false"
-        Tools:layout_constraintStart_toEndOf="@+id/rating"
-        Tools:layout_constraintTop_toBottomOf="@+id/name"
-        tools:text="Address line 1" />
-
-    <TextView
-        android:id="@+id/address2"
-        style="@style/textSubHeading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        Tools:layout_constraintStart_toEndOf="@+id/rating"
-        Tools:layout_constraintTop_toBottomOf="@+id/address1"
-        tools:text="Address line 2" />
-
-    <TextView
-        android:id="@+id/postcode"
-        style="@style/textSubHeading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        Tools:layout_constraintStart_toEndOf="@+id/address2"
-        Tools:layout_constraintTop_toBottomOf="@+id/address1"
-        tools:text="Post Code" />
-
-    <TextView
-        android:id="@+id/inspection_date"
-        style="@style/textAdditionalInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:textAlignment="textEnd"
-        Tools:layout_constraintEnd_toEndOf="parent"
-        Tools:layout_constraintTop_toTopOf="parent"
-        tools:text="Date" />
-
-    <View
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@color/colorDivider"
-        Tools:layout_constraintBottom_toBottomOf="parent"
-        Tools:layout_constraintEnd_toEndOf="parent"
-        Tools:layout_constraintStart_toStartOf="parent"
-        Tools:layout_constraintTop_toBottomOf="@+id/address2" />
+        android:layout_height="wrap_content"
+        android:padding="16dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/square_bg"
+            android:gravity="center"
+            android:shadowColor="@color/black"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            Tools:layout_constraintStart_toStartOf="parent"
+            Tools:layout_constraintTop_toTopOf="parent"
+            tools:text="5" />
+
+
+        <TextView
+            android:id="@+id/name"
+            style="@style/textHeading"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:singleLine="false"
+            Tools:layout_constraintEnd_toStartOf="@+id/inspection_date"
+            Tools:layout_constraintStart_toEndOf="@+id/rating"
+            Tools:layout_constraintTop_toTopOf="parent"
+            tools:text="Restaurant Name" />
+
+        <TextView
+            android:id="@+id/address1"
+            style="@style/textSubHeading"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:ellipsize="end"
+            android:singleLine="false"
+            Tools:layout_constraintStart_toEndOf="@+id/rating"
+            Tools:layout_constraintTop_toBottomOf="@+id/name"
+            tools:text="Address line 1" />
+
+        <TextView
+            android:id="@+id/address2"
+            style="@style/textSubHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            Tools:layout_constraintStart_toEndOf="@+id/rating"
+            Tools:layout_constraintTop_toBottomOf="@+id/address1"
+            tools:text="Address line 2" />
+
+        <TextView
+            android:id="@+id/postcode"
+            style="@style/textSubHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            Tools:layout_constraintStart_toEndOf="@+id/address2"
+            Tools:layout_constraintTop_toBottomOf="@+id/address1"
+            tools:text="Post Code" />
+
+        <TextView
+            android:id="@+id/inspection_date"
+            style="@style/textAdditionalInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="textEnd"
+            Tools:layout_constraintEnd_toEndOf="parent"
+            Tools:layout_constraintTop_toTopOf="parent"
+            tools:text="Date" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/expandable_additional_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:animateLayoutChanges="true"
+            android:visibility="gone"
+            Tools:layout_constraintBottom_toBottomOf="parent"
+            Tools:layout_constraintEnd_toEndOf="parent"
+            Tools:layout_constraintHorizontal_bias="0.531"
+            Tools:layout_constraintStart_toStartOf="parent"
+            Tools:layout_constraintTop_toBottomOf="@+id/address2"
+            Tools:layout_constraintVertical_bias="0.0"
+            tools:visibility="visible">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                Tools:layout_constraintGuide_percent="0.33" />
+
+            <TextView
+                android:id="@+id/business_type_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="8dp"
+                android:text="@string/additional_business_type"
+                Tools:layout_constraintEnd_toStartOf="@+id/guideline"
+                Tools:layout_constraintStart_toStartOf="parent"
+                Tools:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/additional_business_type"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="8dp"
+                Tools:layout_constraintEnd_toEndOf="parent"
+                Tools:layout_constraintStart_toStartOf="@+id/guideline"
+                Tools:layout_constraintTop_toTopOf="parent"
+                tools:text="Retailer - Other" />
+
+            <TextView
+                android:id="@+id/local_authority"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="8dp"
+                android:singleLine="false"
+                Tools:layout_constraintEnd_toEndOf="parent"
+                Tools:layout_constraintStart_toEndOf="@+id/guideline"
+                Tools:layout_constraintTop_toBottomOf="@+id/additional_business_type"
+                tools:text="Dacorum" />
+
+            <TextView
+                android:id="@+id/local_authority_website"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:minLines="2"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="8dp"
+                android:singleLine="false"
+                Tools:layout_constraintEnd_toEndOf="parent"
+                Tools:layout_constraintStart_toStartOf="@+id/guideline"
+                Tools:layout_constraintTop_toBottomOf="@+id/local_authority"
+                tools:text="http://www.dacorum.gov.uk" />
+
+            <TextView
+                android:id="@+id/local_authority_email"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:minLines="2"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="8dp"
+                android:singleLine="false"
+                Tools:layout_constraintEnd_toEndOf="parent"
+                Tools:layout_constraintStart_toStartOf="@+id/guideline"
+                Tools:layout_constraintTop_toBottomOf="@+id/local_authority_website"
+                tools:text="ecp@dacorum.gov.uk" />
+
+            <TextView
+                android:id="@+id/local_authority_name_heading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="8dp"
+                android:singleLine="false"
+                android:text="@string/additional_local_authority_title"
+                android:textAlignment="viewStart"
+                Tools:layout_constraintEnd_toStartOf="@+id/guideline"
+                Tools:layout_constraintStart_toStartOf="parent"
+                Tools:layout_constraintTop_toBottomOf="@+id/additional_business_type" />
+
+            <TextView
+                android:id="@+id/local_authority_website_heading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:minLines="2"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="8dp"
+                android:singleLine="false"
+                android:text="@string/additional_local_authority_website_title"
+                android:textAlignment="viewStart"
+                Tools:layout_constraintEnd_toStartOf="@+id/guideline"
+                Tools:layout_constraintStart_toStartOf="parent"
+                Tools:layout_constraintTop_toBottomOf="@+id/local_authority" />
+
+            <TextView
+                android:id="@+id/local_authority_email_heading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:minLines="2"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="8dp"
+                android:singleLine="false"
+                android:text="@string/additional_local_authority_email_title"
+                android:textAlignment="viewStart"
+                Tools:layout_constraintEnd_toStartOf="@+id/guideline"
+                Tools:layout_constraintStart_toStartOf="parent"
+                Tools:layout_constraintTop_toBottomOf="@+id/local_authority_website" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.cardview.widget.CardView>
