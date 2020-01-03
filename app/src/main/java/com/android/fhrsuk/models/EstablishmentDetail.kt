@@ -22,10 +22,11 @@ data class EstablishmentDetail(
     @SerializedName("LocalAuthorityName") val localAuthorityName: String,
     @SerializedName("LocalAuthorityWebSite") val localAuthorityWebSite: String,
     @SerializedName("LocalAuthorityEmailAddress") val localAuthorityEmailAddress: String,
-    //@SerializedName("com.android.fhrsuk.models.Scores") val scores : com.android.fhrsuk.models.Scores,
+    @SerializedName("com.android.fhrsuk.models.Scores") val scores: Scores,
     @SerializedName("SchemeType") val schemeType: String,
-    @SerializedName("NewRatingPending") val newRatingPending: Boolean
-    //@SerializedName("com.android.fhrsuk.models.Geocode") val geocode : com.android.fhrsuk.models.Geocode,
-    //@SerializedName("Distance") val distance : Double
+    @SerializedName("NewRatingPending") val newRatingPending: Boolean,
+    @SerializedName("com.android.fhrsuk.models.Geocode") val geocode: Geocode,
+    var isExpanded: Boolean
+    //@SerializedName("Distance") val distance : Double?
 
 )
