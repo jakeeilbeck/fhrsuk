@@ -22,4 +22,6 @@
     <string name="additional_local_authority_title">Local Authority</string>
     <string name="additional_local_authority_website_title">Local Authority Website</string>
     <string name="additional_local_authority_email_title">Local Authority Email</string>
+
+    <string name="card_indicator_description">Indicator icon for expanded / collapsed card item</string>
 </resources>

@@ -5,6 +5,7 @@ import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -83,8 +84,15 @@ class EstablishmentAdapter(
 
         //Item expanded state
         val expanded: Boolean = establishmentDetail.isExpanded
-        // Set the visibility based on state
-        viewHolder.expandableAdditionalInfo.visibility = (if (expanded) View.VISIBLE else View.GONE)
+        //Set the visibility based on state and animate indicator arrow icon
+        if (expanded){
+            viewHolder.expandableAdditionalInfo.visibility = View.VISIBLE
+            viewHolder.indicatorIcon.animate().rotation(180F).start()
+        }else{
+            viewHolder.indicatorIcon.animate().rotation(0F).start()
+            viewHolder.expandableAdditionalInfo.visibility = View.GONE
+        }
+
     }
 
     companion object {
@@ -118,6 +126,7 @@ class EstablishmentAdapter(
             itemView.findViewById(R.id.local_authority_website)
         val additionalLocalAuthorityEmaile: TextView =
             itemView.findViewById(R.id.local_authority_email)
+        val indicatorIcon: ImageView = itemView.findViewById(R.id.expand_collapse_indicator)
     }
 
     //set rating background colour based on rating value

@@ -98,6 +98,15 @@
             Tools:layout_constraintTop_toTopOf="parent"
             tools:text="Date" />
 
+        <ImageView
+            android:id="@+id/expand_collapse_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            Tools:layout_constraintEnd_toEndOf="parent"
+            Tools:layout_constraintTop_toTopOf="@+id/postcode"
+            Tools:srcCompat="@drawable/ic_keyboard_arrow_down_black_24dp"
+            android:contentDescription="@string/card_indicator_description" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/expandable_additional_info"
             android:layout_width="0dp"
