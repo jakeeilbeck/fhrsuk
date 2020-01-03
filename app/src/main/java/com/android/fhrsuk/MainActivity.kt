@@ -2,7 +2,6 @@ package com.android.fhrsuk
 
 //TODO ProgressBar disappears too soon
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -30,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_activity)
 
         if (savedInstanceState == null) {
+
             viewPager2 = findViewById(R.id.view_pager)
             val pagerAdapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
 
@@ -39,10 +39,17 @@ class MainActivity : AppCompatActivity() {
             viewPager2.adapter = pagerAdapter
 
         } else {
-            //restart activity in instance of process death
-            val intent = Intent(this, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(intent)
+            //Prevent viewPager2 causing crashes on process death in onPrepareOptionsMenu
+            //by ensuring that an instance exists
+            if (!this::viewPager2.isInitialized) {
+                viewPager2 = findViewById(R.id.view_pager)
+                val pagerAdapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
+
+                pagerAdapter.addFragment(nearbyFragment)
+                pagerAdapter.addFragment(searchFragment)
+
+                viewPager2.adapter = pagerAdapter
+            }
 
             return
         }
