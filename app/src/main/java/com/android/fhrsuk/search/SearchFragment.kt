@@ -1,9 +1,11 @@
 package com.android.fhrsuk.search
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
@@ -14,9 +16,10 @@ import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.fhrsuk.EstablishmentAdapter
-import com.android.fhrsuk.R
 import com.android.fhrsuk.models.EstablishmentDetail
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.android.fhrsuk.R
+
 
 class SearchFragment : Fragment() {
 
@@ -97,6 +100,9 @@ class SearchFragment : Fragment() {
             //clear editText focus on search
             searchNameText.clearFocus()
             searchLocationText.clearFocus()
+
+            //hide keyboard
+            (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(view.windowToken,0)
         }
 
         //show/hide the fab button after scrolled passed ~1 page of results
