@@ -1,4 +1,4 @@
-package com.android.fhrsuk.nearbyList
+package com.android.fhrsuk.search
 
 import android.content.Context
 import android.util.Log
@@ -17,10 +17,10 @@ private const val PAGE_SIZE = 50
 private const val RESPONSE_TYPE: String = "json"
 
 //PagedKeyDataSource used to load data in pages
-class NearbyEstablishmentRepository(
+class SearchRepository(
     var context: Context,
-    private var longitude: String,
-    private var latitude: String
+    private var name: String,
+    private var location: String
 ) :
     PageKeyedDataSource<Int, EstablishmentDetail>() {
 
@@ -29,18 +29,18 @@ class NearbyEstablishmentRepository(
     var data = MutableLiveData<JsonBase>()
 
     private var currentPage: Int = 1
-    private var maxPages = 0
+    private var maxPages: Int = 0
 
     override fun loadInitial(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, EstablishmentDetail>
     ) {
 
-        val loadingState = NearbyLoadingState
+        val loadingState = SearchLoadingState
         loadingState.setLoadingState(1)
 
-        establishmentApi.getNearby(
-            longitude, latitude, currentPage,
+        establishmentApi.getSearch(
+            name, location, currentPage,
             PAGE_SIZE,
             RESPONSE_TYPE
         )
@@ -85,8 +85,8 @@ class NearbyEstablishmentRepository(
         callback: LoadCallback<Int, EstablishmentDetail>
     ) {
 
-        establishmentApi.getNearby(
-            longitude, latitude, currentPage,
+        establishmentApi.getSearch(
+            name, location, currentPage,
             PAGE_SIZE,
             RESPONSE_TYPE
         )
@@ -123,6 +123,7 @@ class NearbyEstablishmentRepository(
                     ).show()
                     Log.i("EstablishmentRepository", "OnFailure! $t")
                 }
+
             })
     }
 

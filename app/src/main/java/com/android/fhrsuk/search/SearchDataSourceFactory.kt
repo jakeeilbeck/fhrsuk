@@ -17,7 +17,7 @@ class SearchDataSourceFactory(
 
     override fun create(): DataSource<Int, EstablishmentDetail> {
 
-        val dataSource = SearchEstablishmentRepository(
+        val dataSource = SearchRepository(
             context,
             name,
             location

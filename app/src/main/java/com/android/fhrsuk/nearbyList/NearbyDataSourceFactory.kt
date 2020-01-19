@@ -18,7 +18,7 @@ class NearbyDataSourceFactory(
 
     override fun create(): DataSource<Int, EstablishmentDetail> {
 
-        val dataSource = NearbyEstablishmentRepository(
+        val dataSource = NearbyRepository(
             context,
             longitude,
             latitude
