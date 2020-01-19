@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.fhrsuk.BuildConfig
-import com.android.fhrsuk.EstablishmentAdapter
+import com.android.fhrsuk.RecyclerViewAdapter
 import com.android.fhrsuk.R
 import com.android.fhrsuk.models.EstablishmentDetail
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -33,7 +33,7 @@ private const val TAG = "NearbyFragment"
 class NearbyFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: EstablishmentAdapter
+    private lateinit var adapter: RecyclerViewAdapter
 
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var progressBar: ProgressBar
@@ -97,7 +97,7 @@ class NearbyFragment : Fragment() {
 
         fabUp.hide()
 
-        adapter = EstablishmentAdapter(requireContext())
+        adapter = RecyclerViewAdapter(requireContext())
         recyclerView = view.findViewById(R.id.list_recyclerView) as RecyclerView
 
         //stops 'blinking' effect when item is clicked

@@ -2,7 +2,6 @@ package com.android.fhrsuk.search
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.fhrsuk.EstablishmentAdapter
+import com.android.fhrsuk.RecyclerViewAdapter
 import com.android.fhrsuk.models.EstablishmentDetail
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.android.fhrsuk.R
@@ -53,7 +52,7 @@ class SearchFragment : Fragment() {
         var searchRestaurantName: String
         var searchLocation: String
 
-        val adapter = EstablishmentAdapter(requireContext())
+        val adapter = RecyclerViewAdapter(requireContext())
         val recyclerView: RecyclerView = view.findViewById(R.id.search_recyclerView)
 
         progressBar = view.findViewById(R.id.progressbar_search)

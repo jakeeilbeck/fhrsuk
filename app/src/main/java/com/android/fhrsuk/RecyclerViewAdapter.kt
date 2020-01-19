@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.fhrsuk.models.EstablishmentDetail
 
-class EstablishmentAdapter(
+class RecyclerViewAdapter(
     private var context: Context
-) : PagedListAdapter<EstablishmentDetail, EstablishmentAdapter.ViewHolder>(
+) : PagedListAdapter<EstablishmentDetail, RecyclerViewAdapter.ViewHolder>(
     diffCallback
 ) {
 
