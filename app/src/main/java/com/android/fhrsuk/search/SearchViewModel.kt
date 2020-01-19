@@ -1,9 +1,8 @@
 package com.android.fhrsuk.search
 
-
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
+import android.util.Log
+import androidx.lifecycle.*
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PageKeyedDataSource
 import androidx.paging.PagedList
@@ -16,23 +15,34 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
 
     lateinit var itemPagedList: LiveData<PagedList<EstablishmentDetail>>
     lateinit var liveDataSource: LiveData<PageKeyedDataSource<Int, EstablishmentDetail>>
-
     private lateinit var itemDataSourceFactory: SearchDataSourceFactory
 
+    private val loadingState = SearchLoadingState.loadingState
+    val searchLoadingState = MutableLiveData(0)
+    lateinit var stateObserver: Observer<Int>
+
     fun init() {
+
         itemDataSourceFactory = SearchDataSourceFactory(
             this.getApplication(),
             name,
             location
         )
-        this.liveDataSource = itemDataSourceFactory.getItemLiveDataSource()
+
+        liveDataSource = itemDataSourceFactory.getItemLiveDataSource()
 
         val config = PagedList.Config.Builder()
             .setEnablePlaceholders(false)
             .setPageSize(50)
             .build()
 
-        this.itemPagedList = LivePagedListBuilder(itemDataSourceFactory, config).build()
+        itemPagedList = LivePagedListBuilder(itemDataSourceFactory, config).build()
+
+        //observe loading state or retrofit in singleton
+        stateObserver = Observer{ currentState ->
+            searchLoadingState.value = currentState
+        }
+        loadingState.observeForever(stateObserver)
     }
 
     fun setSearchTerms(name: String, location: String) {
@@ -40,4 +50,8 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         this.location = location
     }
 
+    override fun onCleared() {
+        loadingState.removeObserver(stateObserver)
+        super.onCleared()
+    }
 }

@@ -1,6 +1,5 @@
 package com.android.fhrsuk.nearbyList
 
-
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
@@ -13,7 +12,6 @@ import com.android.fhrsuk.network.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
 
 private const val PAGE_SIZE = 50
 private const val RESPONSE_TYPE: String = "json"
@@ -37,6 +35,10 @@ class NearbyEstablishmentRepository(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, EstablishmentDetail>
     ) {
+
+        val loadingState = NearbyLoadingState
+        loadingState.setLoadingState(1)
+
         establishmentApi.getNearby(
             longitude, latitude, currentPage,
             PAGE_SIZE,
@@ -63,9 +65,11 @@ class NearbyEstablishmentRepository(
                             ).show()
                         }
                     }
+                    loadingState.setLoadingState(0)
                 }
 
                 override fun onFailure(call: Call<JsonBase>, t: Throwable) {
+                    loadingState.setLoadingState(0)
                     Toast.makeText(
                         context,
                         context.getString(com.android.fhrsuk.R.string.response_no_connection),

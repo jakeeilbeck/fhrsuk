@@ -35,6 +35,10 @@ class SearchEstablishmentRepository(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, EstablishmentDetail>
     ) {
+
+        val loadingState = SearchLoadingState
+        loadingState.setLoadingState(1)
+
         establishmentApi.getSearch(
             name, location, currentPage,
             PAGE_SIZE,
@@ -61,9 +65,11 @@ class SearchEstablishmentRepository(
                             ).show()
                         }
                     }
+                    loadingState.setLoadingState(0)
                 }
 
                 override fun onFailure(call: Call<JsonBase>, t: Throwable) {
+                    loadingState.setLoadingState(0)
                     Toast.makeText(
                         context,
                         context.getString(com.android.fhrsuk.R.string.response_no_connection),
@@ -71,7 +77,6 @@ class SearchEstablishmentRepository(
                     ).show()
                     Log.i("EstablishmentRepository", "OnFailure! $t")
                 }
-
             })
     }
 

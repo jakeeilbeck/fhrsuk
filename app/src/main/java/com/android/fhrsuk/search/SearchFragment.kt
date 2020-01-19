@@ -2,6 +2,7 @@ package com.android.fhrsuk.search
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,7 +57,16 @@ class SearchFragment : Fragment() {
         val recyclerView: RecyclerView = view.findViewById(R.id.search_recyclerView)
 
         progressBar = view.findViewById(R.id.progressbar_search)
-        //showProgressBar(false)
+
+        //show/hide progressBar based on retrofit loading status
+        val loadingStateObserver = Observer<Int> {currentState ->
+            if (currentState == 0){
+                showProgressBar(false)
+            }else if(currentState == 1){
+                showProgressBar(true)
+            }
+        }
+        searchViewModel.searchLoadingState.observe(this, loadingStateObserver)
 
         //stops 'blinking' effect when item is clicked
         recyclerView.itemAnimator?.changeDuration = 0
@@ -68,7 +78,6 @@ class SearchFragment : Fragment() {
 
         searchButton.setOnClickListener {
 
-            showProgressBar(true)
             recyclerView.visibility = View.INVISIBLE
 
             searchRestaurantName = searchNameText.text.toString().trim()
@@ -90,7 +99,6 @@ class SearchFragment : Fragment() {
                         adapter.submitList(items)
                         adapter.notifyDataSetChanged()
 
-                        showProgressBar(false)
                         recyclerView.visibility = View.VISIBLE
 
                     }

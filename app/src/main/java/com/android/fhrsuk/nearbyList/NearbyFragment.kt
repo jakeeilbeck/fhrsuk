@@ -85,7 +85,16 @@ class NearbyFragment : Fragment() {
         progressBar = view.findViewById(R.id.progressbar_list)
         val fabUp: FloatingActionButton = view.findViewById(R.id.fab_up)
 
-        showProgressBar(true)
+        //show/hide progressBar based on retrofit loading status
+        val loadingStateObserver = Observer<Int> {currentState ->
+            if (currentState == 0){
+                showProgressBar(false)
+            }else if(currentState == 1){
+                showProgressBar(true)
+            }
+        }
+        nearbyViewModel.nearbyLoadingState.observe(this, loadingStateObserver)
+
         fabUp.hide()
 
         adapter = EstablishmentAdapter(requireContext())
