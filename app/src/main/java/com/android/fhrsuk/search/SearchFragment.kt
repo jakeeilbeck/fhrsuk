@@ -11,14 +11,14 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.fhrsuk.R
 import com.android.fhrsuk.RecyclerViewAdapter
 import com.android.fhrsuk.models.EstablishmentDetail
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.android.fhrsuk.R
 
 
 class SearchFragment : Fragment() {
@@ -29,7 +29,7 @@ class SearchFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        searchViewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
+        searchViewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -58,14 +58,14 @@ class SearchFragment : Fragment() {
         progressBar = view.findViewById(R.id.progressbar_search)
 
         //show/hide progressBar based on retrofit loading status
-        val loadingStateObserver = Observer<Int> {currentState ->
-            if (currentState == 0){
+        val loadingStateObserver = Observer<Int> { currentState ->
+            if (currentState == 0) {
                 showProgressBar(false)
-            }else if(currentState == 1){
+            } else if (currentState == 1) {
                 showProgressBar(true)
             }
         }
-        searchViewModel.searchLoadingState.observe(this, loadingStateObserver)
+        searchViewModel.searchLoadingState.observe(viewLifecycleOwner, loadingStateObserver)
 
         //stops 'blinking' effect when item is clicked
         recyclerView.itemAnimator?.changeDuration = 0
@@ -90,7 +90,7 @@ class SearchFragment : Fragment() {
             searchViewModel.init()
 
             //Refreshes views with new data
-            searchViewModel.itemPagedList.observe(this,
+            searchViewModel.itemPagedList.observe(viewLifecycleOwner,
                 Observer<PagedList<EstablishmentDetail>> { items ->
                     items?.let {
 
@@ -109,7 +109,10 @@ class SearchFragment : Fragment() {
             searchLocationText.clearFocus()
 
             //hide keyboard
-            (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(view.windowToken,0)
+            (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
+                view.windowToken,
+                0
+            )
         }
 
         //show/hide the fab button after scrolled passed ~1 page of results

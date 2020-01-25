@@ -15,14 +15,14 @@ import android.widget.ProgressBar
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.fhrsuk.BuildConfig
-import com.android.fhrsuk.RecyclerViewAdapter
 import com.android.fhrsuk.R
+import com.android.fhrsuk.RecyclerViewAdapter
 import com.android.fhrsuk.models.EstablishmentDetail
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -46,10 +46,9 @@ class NearbyFragment : Fragment() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.i(TAG, "onCreate")
         super.onCreate(savedInstanceState)
         retainInstance = true
-        nearbyViewModel = ViewModelProviders.of(this).get(NearbyViewModel::class.java)
+        nearbyViewModel = ViewModelProvider(this).get(NearbyViewModel::class.java)
 
         //Observer for location updates
         val locationObserver = Observer<Location> { newLocation ->
@@ -73,12 +72,10 @@ class NearbyFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.i(TAG, "onCreateView")
         return inflater.inflate(R.layout.fragment_nearby_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.i(TAG, "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
 
         swipeRefresh = view.findViewById(R.id.swipe_refresh)
@@ -86,14 +83,14 @@ class NearbyFragment : Fragment() {
         val fabUp: FloatingActionButton = view.findViewById(R.id.fab_up)
 
         //show/hide progressBar based on retrofit loading status
-        val loadingStateObserver = Observer<Int> {currentState ->
-            if (currentState == 0){
+        val loadingStateObserver = Observer<Int> { currentState ->
+            if (currentState == 0) {
                 showProgressBar(false)
-            }else if(currentState == 1){
+            } else if (currentState == 1) {
                 showProgressBar(true)
             }
         }
-        nearbyViewModel.nearbyLoadingState.observe(this, loadingStateObserver)
+        nearbyViewModel.nearbyLoadingState.observe(viewLifecycleOwner, loadingStateObserver)
 
         fabUp.hide()
 
@@ -128,7 +125,6 @@ class NearbyFragment : Fragment() {
     }
 
     override fun onStart() {
-        Log.i(TAG, "onStart")
         super.onStart()
 
         if (!checkPermissions()) {
@@ -143,7 +139,7 @@ class NearbyFragment : Fragment() {
     //Called initially and on each swipeRefresh
     //Refreshes views with new data
     private fun init() {
-        nearbyViewModel.itemPagedList.observe(this,
+        nearbyViewModel.itemPagedList.observe(viewLifecycleOwner,
             Observer<PagedList<EstablishmentDetail>> { items ->
                 items?.let {
 
