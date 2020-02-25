@@ -15,5 +15,6 @@ This project includes:
 - Retrofit
 - Location Services
 - ViewPager2
+- View Binding
 
 ![Screenshot of nearby view](https://i.imgur.com/t0seyDQ.png) ![Screenshot of search view](https://i.imgur.com/a3hDDKE.png)
