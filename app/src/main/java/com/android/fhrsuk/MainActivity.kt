@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
+import com.android.fhrsuk.databinding.MainActivityBinding
 import com.android.fhrsuk.nearbyList.NearbyFragment
 import com.android.fhrsuk.search.SearchFragment
 
@@ -21,14 +22,17 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewPager2: ViewPager2
 
+    private lateinit var binding: MainActivityBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.main_activity)
+        binding = MainActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         if (savedInstanceState == null) {
 
-            viewPager2 = findViewById(R.id.view_pager)
+            viewPager2 = binding.viewPager
             val pagerAdapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
 
             pagerAdapter.addFragment(nearbyFragment)
@@ -40,7 +44,7 @@ class MainActivity : AppCompatActivity() {
             //Prevent viewPager2 causing crashes on process death in onPrepareOptionsMenu
             //by ensuring that an instance exists
             if (!this::viewPager2.isInitialized) {
-                viewPager2 = findViewById(R.id.view_pager)
+                viewPager2 = binding.viewPager
                 val pagerAdapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
 
                 pagerAdapter.addFragment(nearbyFragment)

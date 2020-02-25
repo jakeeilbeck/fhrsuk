@@ -2,9 +2,7 @@ package com.android.fhrsuk.search
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
@@ -17,14 +15,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.fhrsuk.R
 import com.android.fhrsuk.RecyclerViewAdapter
+import com.android.fhrsuk.databinding.FragmentSearchBinding
 import com.android.fhrsuk.models.EstablishmentDetail
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
-class SearchFragment : Fragment() {
+class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private lateinit var searchViewModel: SearchViewModel
     private lateinit var progressBar: ProgressBar
+
+    private var fragmentSearchBinding: FragmentSearchBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,30 +33,25 @@ class SearchFragment : Fragment() {
         searchViewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-
-        return inflater.inflate(R.layout.fragment_search, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val searchNameText: EditText = view.findViewById(R.id.edit_text_name)
-        val searchLocationText: EditText = view.findViewById(R.id.edit_text_location)
-        val searchButton: Button = view.findViewById(R.id.button_search)
+        val binding = FragmentSearchBinding.bind(view)
+        fragmentSearchBinding = binding
 
-        val fabUp: FloatingActionButton = view.findViewById(R.id.fab_up)
+        val searchNameText: EditText = binding.editTextName
+        val searchLocationText: EditText = binding.editTextLocation
+        val searchButton: Button = binding.buttonSearch
+
+        val fabUp: FloatingActionButton = binding.fabUp
 
         var searchRestaurantName: String
         var searchLocation: String
 
         val adapter = RecyclerViewAdapter(requireContext())
-        val recyclerView: RecyclerView = view.findViewById(R.id.search_recyclerView)
+        val recyclerView: RecyclerView = binding.searchRecyclerView
 
-        progressBar = view.findViewById(R.id.progressbar_search)
+        progressBar = binding.progressbarSearch
 
         //show/hide progressBar based on retrofit loading status
         val loadingStateObserver = Observer<Int> { currentState ->
@@ -99,7 +95,6 @@ class SearchFragment : Fragment() {
                         adapter.notifyDataSetChanged()
 
                         recyclerView.visibility = View.VISIBLE
-
                     }
                 }
             )

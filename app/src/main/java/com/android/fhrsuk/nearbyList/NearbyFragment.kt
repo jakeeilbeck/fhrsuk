@@ -8,9 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -23,6 +21,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.fhrsuk.BuildConfig
 import com.android.fhrsuk.R
 import com.android.fhrsuk.RecyclerViewAdapter
+import com.android.fhrsuk.databinding.FragmentNearbyListBinding
 import com.android.fhrsuk.models.EstablishmentDetail
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -30,7 +29,7 @@ import com.google.android.material.snackbar.Snackbar
 private const val PERMISSIONS_REQUEST_CODE = 11
 private const val TAG = "NearbyFragment"
 
-class NearbyFragment : Fragment() {
+class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RecyclerViewAdapter
@@ -44,6 +43,7 @@ class NearbyFragment : Fragment() {
 
     private var firstCall: Boolean = true
 
+    private var fragmentNearbyListBinding: FragmentNearbyListBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,19 +68,15 @@ class NearbyFragment : Fragment() {
         locationServices.location.observe(this, locationObserver)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return inflater.inflate(R.layout.fragment_nearby_list, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        swipeRefresh = view.findViewById(R.id.swipe_refresh)
-        progressBar = view.findViewById(R.id.progressbar_list)
-        val fabUp: FloatingActionButton = view.findViewById(R.id.fab_up)
+        val binding = FragmentNearbyListBinding.bind(view)
+        fragmentNearbyListBinding = binding
+
+        swipeRefresh = binding.swipeRefresh
+        progressBar = binding.progressbarList
+        val fabUp: FloatingActionButton = binding.fabUp
 
         //show/hide progressBar based on retrofit loading status
         val loadingStateObserver = Observer<Int> { currentState ->
@@ -95,7 +91,7 @@ class NearbyFragment : Fragment() {
         fabUp.hide()
 
         adapter = RecyclerViewAdapter(requireContext())
-        recyclerView = view.findViewById(R.id.list_recyclerView) as RecyclerView
+        recyclerView = binding.listRecyclerView
 
         //stops 'blinking' effect when item is clicked
         recyclerView.itemAnimator?.changeDuration = 0
@@ -134,6 +130,11 @@ class NearbyFragment : Fragment() {
         } else {
             locationServices.startLocationUpdates()
         }
+    }
+
+    override fun onDestroyView() {
+        fragmentNearbyListBinding = null
+        super.onDestroyView()
     }
 
     //Called initially and on each swipeRefresh

@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.android.fhrsuk.databinding.ListItemBinding
 import com.android.fhrsuk.models.EstablishmentDetail
 
 class RecyclerViewAdapter(
@@ -22,8 +23,8 @@ class RecyclerViewAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.list_item, parent, false)
-        return ViewHolder(view)
+        val listItemBinding = ListItemBinding.inflate(inflater, parent, false)
+        return ViewHolder(listItemBinding)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
@@ -35,7 +36,7 @@ class RecyclerViewAdapter(
         viewHolder.additionalBusinessTypeTextView.text = establishmentDetail.businessType
         viewHolder.additionalLocalAuthorityName.text = establishmentDetail.localAuthorityName
         viewHolder.additionalLocalAuthorityWebsite.text = establishmentDetail.localAuthorityWebSite
-        viewHolder.additionalLocalAuthorityEmaile.text =
+        viewHolder.additionalLocalAuthorityEmail.text =
             establishmentDetail.localAuthorityEmailAddress
 
         //display N/A when rating isn't available, and show the reason why where the date would otherwise be
@@ -85,10 +86,10 @@ class RecyclerViewAdapter(
         //Item expanded state
         val expanded: Boolean = establishmentDetail.isExpanded
         //Set the visibility based on state and animate indicator arrow icon
-        if (expanded){
+        if (expanded) {
             viewHolder.expandableAdditionalInfo.visibility = View.VISIBLE
             viewHolder.indicatorIcon.animate().rotation(180F).start()
-        }else{
+        } else {
             viewHolder.indicatorIcon.animate().rotation(0F).start()
             viewHolder.expandableAdditionalInfo.visibility = View.GONE
         }
@@ -110,23 +111,21 @@ class RecyclerViewAdapter(
         }
     }
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val nameTextView: TextView = itemView.findViewById(R.id.name)
-        val ratingTextView: TextView = itemView.findViewById(R.id.rating)
-        val address1TextView: TextView = itemView.findViewById(R.id.address1)
-        val address2TextView: TextView = itemView.findViewById(R.id.address2)
-        val postcodeTextView: TextView = itemView.findViewById(R.id.postcode)
-        val inspectionDateTextView: TextView = itemView.findViewById(R.id.inspection_date)
-        val expandableAdditionalInfo: View = itemView.findViewById(R.id.expandable_additional_info)
-        val cardView: CardView = itemView.findViewById(R.id.card_view)
-        val additionalBusinessTypeTextView: TextView =
-            itemView.findViewById(R.id.additional_business_type)
-        val additionalLocalAuthorityName: TextView = itemView.findViewById(R.id.local_authority)
-        val additionalLocalAuthorityWebsite: TextView =
-            itemView.findViewById(R.id.local_authority_website)
-        val additionalLocalAuthorityEmaile: TextView =
-            itemView.findViewById(R.id.local_authority_email)
-        val indicatorIcon: ImageView = itemView.findViewById(R.id.expand_collapse_indicator)
+    inner class ViewHolder(listItemBinding: ListItemBinding) :
+        RecyclerView.ViewHolder(listItemBinding.root) {
+        val nameTextView: TextView = listItemBinding.name
+        val ratingTextView: TextView = listItemBinding.rating
+        val address1TextView: TextView = listItemBinding.address1
+        val address2TextView: TextView = listItemBinding.address2
+        val postcodeTextView: TextView = listItemBinding.postcode
+        val inspectionDateTextView: TextView = listItemBinding.inspectionDate
+        val expandableAdditionalInfo: View = listItemBinding.expandableAdditionalInfo
+        val cardView: CardView = listItemBinding.cardView
+        val additionalBusinessTypeTextView: TextView = listItemBinding.additionalBusinessType
+        val additionalLocalAuthorityName: TextView = listItemBinding.localAuthority
+        val additionalLocalAuthorityWebsite: TextView = listItemBinding.localAuthorityWebsite
+        val additionalLocalAuthorityEmail: TextView = listItemBinding.localAuthorityEmail
+        val indicatorIcon: ImageView = listItemBinding.expandCollapseIndicator
     }
 
     //set rating background colour based on rating value
