@@ -1,9 +1,9 @@
 package com.android.fhrsuk.models
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
-data class Links (
+data class Links(
 
-    @SerializedName("rel") val rel : String,
-    @SerializedName("href") val href : String
+    @Json(name = "rel") val rel: String?,
+    @Json(name = "href") val href: String?
 )

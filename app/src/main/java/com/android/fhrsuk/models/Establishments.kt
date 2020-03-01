@@ -1,34 +1,34 @@
 package com.android.fhrsuk.models
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
-data class Establishments (
+data class Establishments(
 
-    @SerializedName("FHRSID") val fHRSID : Int,
-    @SerializedName("LocalAuthorityBusinessID") val localAuthorityBusinessID : String,
-    @SerializedName("BusinessName") val businessName : String,
-    @SerializedName("BusinessType") val businessType : String,
-    @SerializedName("BusinessTypeID") val businessTypeID : Int,
-    @SerializedName("AddressLine1") val addressLine1 : String,
-    @SerializedName("AddressLine2") val addressLine2 : String,
-    @SerializedName("AddressLine3") val addressLine3 : String,
-    @SerializedName("AddressLine4") val addressLine4 : String,
-    @SerializedName("PostCode") val postCode : String,
-    @SerializedName("Phone") val phone : String,
-    @SerializedName("RatingValue") val ratingValue : String,
-    @SerializedName("RatingKey") val ratingKey : String,
-    @SerializedName("RatingDate") val ratingDate : String,
-    @SerializedName("LocalAuthorityCode") val localAuthorityCode : Int,
-    @SerializedName("LocalAuthorityName") val localAuthorityName : String,
-    @SerializedName("LocalAuthorityWebSite") val localAuthorityWebSite : String,
-    @SerializedName("LocalAuthorityEmailAddress") val localAuthorityEmailAddress : String,
-    @SerializedName("scores") val scores : Scores,
-    @SerializedName("SchemeType") val schemeType : String,
-    @SerializedName("geocode") val geocode : Geocode,
-    @SerializedName("RightToReply") val rightToReply : String,
-    @SerializedName("Distance") val distance : Double,
-    @SerializedName("NewRatingPending") val newRatingPending : Boolean,
-    @SerializedName("meta") val meta : Meta,
-    @SerializedName("links") val links : List<Links>,
-    var isExpanded: Boolean
+    @Json(name = "FHRSID") val fHRSID: Int,
+    @Json(name = "LocalAuthorityBusinessID") val localAuthorityBusinessID: String?,
+    @Json(name = "BusinessName") val businessName: String,
+    @Json(name = "BusinessType") val businessType: String,
+    @Json(name = "BusinessTypeID") val businessTypeID: Int?,
+    @Json(name = "AddressLine1") val addressLine1: String?,
+    @Json(name = "AddressLine2") val addressLine2: String?,
+    @Json(name = "AddressLine3") val addressLine3: String?,
+    @Json(name = "AddressLine4") val addressLine4: String?,
+    @Json(name = "PostCode") val postCode: String,
+    @Json(name = "Phone") val phone: String?,
+    @Json(name = "RatingValue") val ratingValue: String,
+    @Json(name = "RatingKey") val ratingKey: String?,
+    @Json(name = "RatingDate") val ratingDate: String,
+    @Json(name = "LocalAuthorityCode") val localAuthorityCode: Int?,
+    @Json(name = "LocalAuthorityName") val localAuthorityName: String?,
+    @Json(name = "LocalAuthorityWebSite") val localAuthorityWebSite: String?,
+    @Json(name = "LocalAuthorityEmailAddress") val localAuthorityEmailAddress: String?,
+    @Json(name = "scores") val scores: Scores,
+    @Json(name = "SchemeType") val schemeType: String?,
+    @Json(name = "geocode") val geocode: Geocode,
+    @Json(name = "RightToReply") val rightToReply: String?,
+    @Json(name = "Distance") val distance: Double?,
+    @Json(name = "NewRatingPending") val newRatingPending: Boolean?,
+    @Json(name = "meta") val meta: Meta,
+    @Json(name = "links") val links: List<Links>,
+    @Transient var isExpanded: Boolean = false
 )

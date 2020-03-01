@@ -78,6 +78,9 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
         progressBar = binding.progressbarList
         val fabUp: FloatingActionButton = binding.fabUp
 
+        //Display progressBar whilst location data loads
+        showProgressBar(true)
+
         //show/hide progressBar based on retrofit loading status
         val loadingStateObserver = Observer<Int> { currentState ->
             if (currentState == 0) {

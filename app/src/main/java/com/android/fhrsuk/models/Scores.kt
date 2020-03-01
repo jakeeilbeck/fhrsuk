@@ -1,10 +1,10 @@
 package com.android.fhrsuk.models
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
-data class Scores (
+data class Scores(
 
-    @SerializedName("Hygiene") val hygiene : Int?,
-    @SerializedName("Structural") val structural : Int?,
-    @SerializedName("ConfidenceInManagement") val confidenceInManagement : Int?
+    @Json(name = "Hygiene") val hygiene: Int?,
+    @Json(name = "Structural") val structural: Int?,
+    @Json(name = "ConfidenceInManagement") val confidenceInManagement: Int?
 )

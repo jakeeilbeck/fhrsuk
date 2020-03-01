@@ -1,15 +1,15 @@
 package com.android.fhrsuk.models
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
-data class Meta (
+data class Meta(
 
-    @SerializedName("dataSource") val dataSource : String,
-    @SerializedName("extractDate") val extractDate : String,
-    @SerializedName("itemCount") val itemCount : Int,
-    @SerializedName("returncode") val returncode : String,
-    @SerializedName("totalCount") val totalCount : Int,
-    @SerializedName("totalPages") val totalPages : Int,
-    @SerializedName("pageSize") val pageSize : Int,
-    @SerializedName("pageNumber") val pageNumber : Int
+    @Json(name = "dataSource") val dataSource: String?,
+    @Json(name = "extractDate") val extractDate: String,
+    @Json(name = "itemCount") val itemCount: Int,
+    @Json(name = "returncode") val returncode: String?,
+    @Json(name = "totalCount") val totalCount: Int,
+    @Json(name = "totalPages") val totalPages: Int,
+    @Json(name = "pageSize") val pageSize: Int,
+    @Json(name = "pageNumber") val pageNumber: Int
 )
