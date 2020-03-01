@@ -9,16 +9,15 @@ import androidx.lifecycle.Observer
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PageKeyedDataSource
 import androidx.paging.PagedList
-import com.android.fhrsuk.models.EstablishmentDetail
-import com.android.fhrsuk.search.SearchLoadingState
+import com.android.fhrsuk.models.Establishments
 
 class NearbyViewModel(application: Application) : AndroidViewModel(application) {
 
     private lateinit var longitude: String
     private lateinit var latitude: String
 
-    lateinit var itemPagedList: LiveData<PagedList<EstablishmentDetail>>
-    lateinit var liveDataSource: LiveData<PageKeyedDataSource<Int, EstablishmentDetail>>
+    lateinit var itemPagedList: LiveData<PagedList<Establishments>>
+    lateinit var liveDataSource: LiveData<PageKeyedDataSource<Int, Establishments>>
     private lateinit var itemDataSourceFactory: NearbyDataSourceFactory
 
     private val loadingState = NearbyLoadingState.loadingState
@@ -43,7 +42,7 @@ class NearbyViewModel(application: Application) : AndroidViewModel(application) 
         itemPagedList = LivePagedListBuilder(itemDataSourceFactory, config).build()
 
         //observe loading state or retrofit in singleton
-        stateObserver = Observer{ currentState ->
+        stateObserver = Observer { currentState ->
             nearbyLoadingState.value = currentState
         }
         loadingState.observeForever(stateObserver)

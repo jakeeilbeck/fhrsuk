@@ -5,6 +5,7 @@
     <string name="rating_awaiting_publication">Awaiting Publication</string>
     <string name="rating_awaiting_inspection">Awaiting Inspection</string>
     <string name="rating_pass">Pass</string>
+    <string name="not_available">N/A</string>
 
     <string name="hint_restaurant">restaurant or establishment…</string>
     <string name="hint_location">street or town…</string>
@@ -19,9 +20,17 @@
     <string name="settings">Permission Settings</string>
 
     <string name="additional_business_type">Business Type</string>
-    <string name="additional_local_authority_title">Local Authority</string>
-    <string name="additional_local_authority_website_title">Local Authority Website</string>
-    <string name="additional_local_authority_email_title">Local Authority Email</string>
+    <string name="score_breakdown_hygiene_heading">Hygiene</string>
+    <string name="score_breakdown_structural_heading">Structural</string>
+    <string name="score_breakdown_management_heading">Management</string>
+
+    <string name="score_breakdown_very_good">Very Good</string>
+    <string name="score_breakdown_good">Good</string>
+    <string name="score_breakdown_generally_satisfactory">Generally satisfactory</string>
+    <string name="score_breakdown_improvement_necessary">Improvement necessary</string>
+    <string name="score_breakdown_major_improvement_necessary">Major improvement necessary</string>
+    <string name="score_breakdown_urgent_improvement_necessary">Urgent improvement necessary</string>
 
     <string name="card_indicator_description">Indicator icon for expanded / collapsed card item</string>
+
 </resources>

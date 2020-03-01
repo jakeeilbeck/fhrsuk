@@ -4,7 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 data class JsonBase(
 
-//	@SerializedName("?xml") val xml : Xml,
-    @SerializedName("FHRSEstablishment") val fHRSEstablishment: FHRSEstablishment
+    @SerializedName("establishments") val establishments : List<Establishments>,
+    @SerializedName("meta") val meta : Meta,
+    @SerializedName("links") val links : List<Links>
 
 )

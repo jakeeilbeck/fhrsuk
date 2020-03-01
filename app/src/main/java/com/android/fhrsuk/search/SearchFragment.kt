@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.fhrsuk.R
 import com.android.fhrsuk.RecyclerViewAdapter
 import com.android.fhrsuk.databinding.FragmentSearchBinding
-import com.android.fhrsuk.models.EstablishmentDetail
+import com.android.fhrsuk.models.Establishments
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
@@ -78,16 +78,16 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             searchRestaurantName = searchNameText.text.toString().trim()
             searchLocation = searchLocationText.text.toString().trim()
 
-            //Replace empty search term with wildcard
-            if (searchRestaurantName.isEmpty()) searchRestaurantName = "^"
-            if (searchLocation.isEmpty()) searchLocation = "^"
+            //Replace empty search term with empty string / wildcard
+            if (searchRestaurantName.isEmpty()) searchRestaurantName = ""
+            if (searchLocation.isEmpty()) searchLocation = ""
 
             searchViewModel.setSearchTerms(searchRestaurantName, searchLocation)
             searchViewModel.init()
 
             //Refreshes views with new data
             searchViewModel.itemPagedList.observe(viewLifecycleOwner,
-                Observer<PagedList<EstablishmentDetail>> { items ->
+                Observer<PagedList<Establishments>> { items ->
                     items?.let {
 
                         recyclerView.adapter = adapter

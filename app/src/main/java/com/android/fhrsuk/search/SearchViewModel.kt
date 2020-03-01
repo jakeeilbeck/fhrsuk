@@ -1,20 +1,22 @@
 package com.android.fhrsuk.search
 
 import android.app.Application
-import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PageKeyedDataSource
 import androidx.paging.PagedList
-import com.android.fhrsuk.models.EstablishmentDetail
+import com.android.fhrsuk.models.Establishments
 
 class SearchViewModel(application: Application) : AndroidViewModel(application) {
 
     private lateinit var name: String
     private lateinit var location: String
 
-    lateinit var itemPagedList: LiveData<PagedList<EstablishmentDetail>>
-    lateinit var liveDataSource: LiveData<PageKeyedDataSource<Int, EstablishmentDetail>>
+    lateinit var itemPagedList: LiveData<PagedList<Establishments>>
+    lateinit var liveDataSource: LiveData<PageKeyedDataSource<Int, Establishments>>
     private lateinit var itemDataSourceFactory: SearchDataSourceFactory
 
     private val loadingState = SearchLoadingState.loadingState
@@ -39,7 +41,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         itemPagedList = LivePagedListBuilder(itemDataSourceFactory, config).build()
 
         //observe loading state or retrofit in singleton
-        stateObserver = Observer{ currentState ->
+        stateObserver = Observer { currentState ->
             searchLoadingState.value = currentState
         }
         loadingState.observeForever(stateObserver)

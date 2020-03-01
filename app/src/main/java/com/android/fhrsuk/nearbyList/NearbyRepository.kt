@@ -5,7 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
-import com.android.fhrsuk.models.EstablishmentDetail
+import com.android.fhrsuk.models.Establishments
 import com.android.fhrsuk.models.JsonBase
 import com.android.fhrsuk.network.EstablishmentApi
 import com.android.fhrsuk.network.RetrofitService
@@ -14,7 +14,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 private const val PAGE_SIZE = 50
-private const val RESPONSE_TYPE: String = "json"
+private const val SORT_OPTION_KEY = "distance"
 
 //PagedKeyDataSource used to load data in pages
 class NearbyRepository(
@@ -22,7 +22,7 @@ class NearbyRepository(
     private var longitude: String,
     private var latitude: String
 ) :
-    PageKeyedDataSource<Int, EstablishmentDetail>() {
+    PageKeyedDataSource<Int, Establishments>() {
 
     private var establishmentApi: EstablishmentApi = RetrofitService.getRetrofit()
         .create(EstablishmentApi::class.java)
@@ -33,28 +33,26 @@ class NearbyRepository(
 
     override fun loadInitial(
         params: LoadInitialParams<Int>,
-        callback: LoadInitialCallback<Int, EstablishmentDetail>
+        callback: LoadInitialCallback<Int, Establishments>
     ) {
 
         val loadingState = NearbyLoadingState
         loadingState.setLoadingState(1)
 
-        establishmentApi.getNearby(
-            longitude, latitude, currentPage,
-            PAGE_SIZE,
-            RESPONSE_TYPE
+        establishmentApi.getNearbyEstablishments(
+            longitude, latitude, SORT_OPTION_KEY, currentPage, PAGE_SIZE
         )
             .enqueue(object : Callback<JsonBase> {
 
                 override fun onResponse(call: Call<JsonBase>, response: Response<JsonBase>) {
                     if (response.body() != null) {
-                        if (response.body()?.fHRSEstablishment?.header?.itemCount!! >= 1) {
+                        if (response.body()?.meta?.itemCount!! >= 1) {
                             callback.onResult(
-                                response.body()!!.fHRSEstablishment.establishmentCollection.establishmentDetail,
+                                response.body()!!.establishments,
                                 null,
                                 currentPage++
                             )
-                            maxPages = response.body()!!.fHRSEstablishment.header.pageCount + 1
+                            maxPages = response.body()!!.meta.totalPages + 1
 
                         } else {
                             //Successful response but 0 results
@@ -82,24 +80,22 @@ class NearbyRepository(
 
     override fun loadAfter(
         params: LoadParams<Int>,
-        callback: LoadCallback<Int, EstablishmentDetail>
+        callback: LoadCallback<Int, Establishments>
     ) {
 
-        establishmentApi.getNearby(
-            longitude, latitude, currentPage,
-            PAGE_SIZE,
-            RESPONSE_TYPE
+        establishmentApi.getNearbyEstablishments(
+            longitude, latitude, SORT_OPTION_KEY, currentPage, PAGE_SIZE
         )
             .enqueue(object : Callback<JsonBase> {
 
                 override fun onResponse(call: Call<JsonBase>, response: Response<JsonBase>) {
 
                     if (response.body() != null && currentPage != maxPages) {
-                        if (response.body()?.fHRSEstablishment?.header?.itemCount!! >= 1) {
+                        if (response.body()?.meta?.itemCount!! >= 1) {
                             val key =
-                                (if (response.body()!!.fHRSEstablishment.header.pageCount != maxPages) params.key + 1 else null)?.toInt()
+                                (if (response.body()!!.meta.pageNumber != maxPages) params.key + 1 else null)?.toInt()
                             callback.onResult(
-                                response.body()!!.fHRSEstablishment.establishmentCollection.establishmentDetail,
+                                response.body()!!.establishments,
                                 key
                             )
 
@@ -128,7 +124,7 @@ class NearbyRepository(
 
     override fun loadBefore(
         params: LoadParams<Int>,
-        callback: LoadCallback<Int, EstablishmentDetail>
+        callback: LoadCallback<Int, Establishments>
     ) {
 
     }

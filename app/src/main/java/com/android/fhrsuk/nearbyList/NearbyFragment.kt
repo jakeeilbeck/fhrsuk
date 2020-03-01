@@ -22,7 +22,7 @@ import com.android.fhrsuk.BuildConfig
 import com.android.fhrsuk.R
 import com.android.fhrsuk.RecyclerViewAdapter
 import com.android.fhrsuk.databinding.FragmentNearbyListBinding
-import com.android.fhrsuk.models.EstablishmentDetail
+import com.android.fhrsuk.models.Establishments
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 
@@ -141,7 +141,7 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
     //Refreshes views with new data
     private fun init() {
         nearbyViewModel.itemPagedList.observe(viewLifecycleOwner,
-            Observer<PagedList<EstablishmentDetail>> { items ->
+            Observer<PagedList<Establishments>> { items ->
                 items?.let {
 
                     swipeRefresh.isRefreshing = false

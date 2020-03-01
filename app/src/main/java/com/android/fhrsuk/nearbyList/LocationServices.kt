@@ -17,7 +17,6 @@ private const val TAG = "LocationServices"
 
 class LocationServices(private val context: Context) {
 
-    //private lateinit var locationRequest: LocationRequest
     val location = MutableLiveData<Location>()
 
     fun startLocationUpdates() {

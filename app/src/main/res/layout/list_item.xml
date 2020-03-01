@@ -133,118 +133,119 @@
                 android:id="@+id/business_type_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
+                android:singleLine="false"
                 android:text="@string/additional_business_type"
                 Tools:layout_constraintEnd_toStartOf="@+id/guideline"
                 Tools:layout_constraintStart_toStartOf="parent"
                 Tools:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/additional_business_type"
+                android:id="@+id/business_type"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
+                android:paddingBottom="8dp"
+                android:singleLine="false"
                 Tools:layout_constraintEnd_toEndOf="parent"
                 Tools:layout_constraintStart_toStartOf="@+id/guideline"
                 Tools:layout_constraintTop_toTopOf="parent"
                 tools:text="Retailer - Other" />
 
             <TextView
-                android:id="@+id/local_authority"
+                android:id="@+id/score_breakdown_hygiene_heading"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:maxLines="2"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
                 android:singleLine="false"
-                Tools:layout_constraintEnd_toEndOf="parent"
-                Tools:layout_constraintStart_toEndOf="@+id/guideline"
-                Tools:layout_constraintTop_toBottomOf="@+id/additional_business_type"
-                tools:text="Dacorum" />
+                android:text="@string/score_breakdown_hygiene_heading"
+                android:textAlignment="viewStart"
+                Tools:layout_constraintEnd_toStartOf="@+id/guideline"
+                Tools:layout_constraintStart_toStartOf="parent"
+                Tools:layout_constraintTop_toBottomOf="@+id/business_type" />
 
             <TextView
-                android:id="@+id/local_authority_website"
+                android:id="@+id/score_breakdown_hygiene"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:minLines="2"
-                android:paddingStart="8dp"
-                android:paddingTop="8dp"
-                android:paddingEnd="8dp"
-                android:singleLine="false"
-                Tools:layout_constraintEnd_toEndOf="parent"
-                Tools:layout_constraintStart_toStartOf="@+id/guideline"
-                Tools:layout_constraintTop_toBottomOf="@+id/local_authority"
-                tools:text="http://www.dacorum.gov.uk" />
-
-            <TextView
-                android:id="@+id/local_authority_email"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:minLines="2"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
                 android:singleLine="false"
                 Tools:layout_constraintEnd_toEndOf="parent"
                 Tools:layout_constraintStart_toStartOf="@+id/guideline"
-                Tools:layout_constraintTop_toBottomOf="@+id/local_authority_website"
-                tools:text="ecp@dacorum.gov.uk" />
+                Tools:layout_constraintTop_toBottomOf="@+id/business_type"
+                tools:text="Urgent improvement necessary" />
 
             <TextView
-                android:id="@+id/local_authority_name_heading"
+                android:id="@+id/score_breakdown_structural_heading"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:maxLines="2"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
                 android:singleLine="false"
-                android:text="@string/additional_local_authority_title"
+                android:text="@string/score_breakdown_structural_heading"
                 android:textAlignment="viewStart"
                 Tools:layout_constraintEnd_toStartOf="@+id/guideline"
                 Tools:layout_constraintStart_toStartOf="parent"
-                Tools:layout_constraintTop_toBottomOf="@+id/additional_business_type" />
+                Tools:layout_constraintTop_toBottomOf="@+id/score_breakdown_hygiene" />
 
             <TextView
-                android:id="@+id/local_authority_website_heading"
+                android:id="@+id/score_breakdown_structural"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:minLines="2"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
                 android:singleLine="false"
-                android:text="@string/additional_local_authority_website_title"
-                android:textAlignment="viewStart"
-                Tools:layout_constraintEnd_toStartOf="@+id/guideline"
-                Tools:layout_constraintStart_toStartOf="parent"
-                Tools:layout_constraintTop_toBottomOf="@+id/local_authority" />
+                Tools:layout_constraintEnd_toEndOf="parent"
+                Tools:layout_constraintStart_toStartOf="@+id/guideline"
+                Tools:layout_constraintTop_toBottomOf="@+id/score_breakdown_hygiene"
+                tools:text="Urgent improvement necessary" />
 
             <TextView
-                android:id="@+id/local_authority_email_heading"
+                android:id="@+id/score_breakdown_management_heading"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:minLines="2"
                 android:paddingStart="8dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="8dp"
                 android:singleLine="false"
-                android:text="@string/additional_local_authority_email_title"
+                android:text="@string/score_breakdown_management_heading"
                 android:textAlignment="viewStart"
                 Tools:layout_constraintEnd_toStartOf="@+id/guideline"
                 Tools:layout_constraintStart_toStartOf="parent"
-                Tools:layout_constraintTop_toBottomOf="@+id/local_authority_website" />
+                Tools:layout_constraintTop_toBottomOf="@+id/score_breakdown_structural" />
+
+            <TextView
+                android:id="@+id/score_breakdown_management"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="8dp"
+                android:singleLine="false"
+                Tools:layout_constraintEnd_toEndOf="parent"
+                Tools:layout_constraintStart_toStartOf="@+id/guideline"
+                Tools:layout_constraintTop_toBottomOf="@+id/score_breakdown_structural"
+                tools:text="Urgent improvement necessary" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

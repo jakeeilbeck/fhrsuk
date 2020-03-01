@@ -2,8 +2,8 @@ package com.android.fhrsuk.models
 
 import com.google.gson.annotations.SerializedName
 
-data class Geocode(
+data class Geocode (
 
-    @SerializedName("Longitude") val longitude: Double?,
-    @SerializedName("Latitude") val latitude: Double?
+    @SerializedName("longitude") val longitude : Double,
+    @SerializedName("latitude") val latitude : Double
 )

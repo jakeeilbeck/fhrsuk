@@ -8,18 +8,20 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.fhrsuk.databinding.ListItemBinding
-import com.android.fhrsuk.models.EstablishmentDetail
+import com.android.fhrsuk.models.Establishments
+import com.android.fhrsuk.utils.AdapterUtils
 
 class RecyclerViewAdapter(
     private var context: Context
-) : PagedListAdapter<EstablishmentDetail, RecyclerViewAdapter.ViewHolder>(
+) : PagedListAdapter<Establishments, RecyclerViewAdapter.ViewHolder>(
     diffCallback
 ) {
+
+    private val adapterUtils = AdapterUtils(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(context)
@@ -28,51 +30,24 @@ class RecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val establishmentDetail: EstablishmentDetail? = getItem(position)
+        val establishmentDetail: Establishments? = getItem(position)
         viewHolder.nameTextView.text = establishmentDetail!!.businessName
+        viewHolder.ratingTextView.text = adapterUtils.getRating(establishmentDetail.ratingValue)
+        viewHolder.inspectionDateTextView.text =
+            adapterUtils.getDate(establishmentDetail.ratingValue, establishmentDetail.ratingDate)
         viewHolder.address1TextView.text = establishmentDetail.addressLine1
         viewHolder.address2TextView.text = establishmentDetail.addressLine2
         viewHolder.postcodeTextView.text = establishmentDetail.postCode
-        viewHolder.additionalBusinessTypeTextView.text = establishmentDetail.businessType
-        viewHolder.additionalLocalAuthorityName.text = establishmentDetail.localAuthorityName
-        viewHolder.additionalLocalAuthorityWebsite.text = establishmentDetail.localAuthorityWebSite
-        viewHolder.additionalLocalAuthorityEmail.text =
-            establishmentDetail.localAuthorityEmailAddress
-
-        //display N/A when rating isn't available, and show the reason why where the date would otherwise be
-        when (establishmentDetail.ratingValue) {
-            "Exempt" -> {
-                viewHolder.ratingTextView.text = "N/A"
-                viewHolder.inspectionDateTextView.text = context.getString(R.string.rating_exempt)
-            }
-            "AwaitingPublication", "Awaiting Publication" -> {
-                viewHolder.ratingTextView.text = "N/A"
-                viewHolder.inspectionDateTextView.text =
-                    context.getString(R.string.rating_awaiting_publication)
-            }
-            "AwaitingInspection", "Awaiting Inspection" -> {
-                viewHolder.ratingTextView.text = "N/A"
-                viewHolder.inspectionDateTextView.text =
-                    context.getString(R.string.rating_awaiting_inspection)
-            }
-            "Pass and Eat Safe" -> {
-                viewHolder.ratingTextView.text = context.getString(R.string.rating_pass)
-                viewHolder.inspectionDateTextView.text = establishmentDetail.ratingDate
-            }
-            "Improvement Required" -> {
-                viewHolder.ratingTextView.text = "3"
-                viewHolder.inspectionDateTextView.text = establishmentDetail.ratingDate
-            }
-            else -> {
-                viewHolder.ratingTextView.text = establishmentDetail.ratingValue
-                viewHolder.inspectionDateTextView.text = establishmentDetail.ratingDate
-            }
-        }
+        viewHolder.businessTypeTextView.text = establishmentDetail.businessType
+        viewHolder.scoreBreakdownHygiene.text =
+            adapterUtils.getBreakdownHygiene(establishmentDetail.scores.hygiene)
+        viewHolder.scoreBreakdownStructural.text =
+            adapterUtils.getBreakdownStructural(establishmentDetail.scores.structural)
+        viewHolder.scoreBreakdownManagement.text =
+            adapterUtils.getBreakdownManagement(establishmentDetail.scores.confidenceInManagement)
 
         val ratingBg = viewHolder.ratingTextView.background as GradientDrawable
-        val ratingColour = getRatingColour(establishmentDetail.ratingValue)
-        ratingBg.setColor(ratingColour)
-
+        ratingBg.setColor(adapterUtils.getRatingBgColour(establishmentDetail.ratingValue))
 
         viewHolder.cardView.setOnClickListener {
             //Current expanded state
@@ -93,20 +68,19 @@ class RecyclerViewAdapter(
             viewHolder.indicatorIcon.animate().rotation(0F).start()
             viewHolder.expandableAdditionalInfo.visibility = View.GONE
         }
-
     }
 
     companion object {
-        private val diffCallback = object : DiffUtil.ItemCallback<EstablishmentDetail>() {
+        private val diffCallback = object : DiffUtil.ItemCallback<Establishments>() {
 
             override fun areItemsTheSame(
-                oldItem: EstablishmentDetail,
-                newItem: EstablishmentDetail
+                oldItem: Establishments,
+                newItem: Establishments
             ): Boolean = oldItem.fHRSID == newItem.fHRSID
 
             override fun areContentsTheSame(
-                oldItem: EstablishmentDetail,
-                newItem: EstablishmentDetail
+                oldItem: Establishments,
+                newItem: Establishments
             ): Boolean = oldItem == newItem
         }
     }
@@ -121,25 +95,10 @@ class RecyclerViewAdapter(
         val inspectionDateTextView: TextView = listItemBinding.inspectionDate
         val expandableAdditionalInfo: View = listItemBinding.expandableAdditionalInfo
         val cardView: CardView = listItemBinding.cardView
-        val additionalBusinessTypeTextView: TextView = listItemBinding.additionalBusinessType
-        val additionalLocalAuthorityName: TextView = listItemBinding.localAuthority
-        val additionalLocalAuthorityWebsite: TextView = listItemBinding.localAuthorityWebsite
-        val additionalLocalAuthorityEmail: TextView = listItemBinding.localAuthorityEmail
+        val businessTypeTextView: TextView = listItemBinding.businessType
+        val scoreBreakdownHygiene: TextView = listItemBinding.scoreBreakdownHygiene
+        val scoreBreakdownStructural: TextView = listItemBinding.scoreBreakdownStructural
+        val scoreBreakdownManagement: TextView = listItemBinding.scoreBreakdownManagement
         val indicatorIcon: ImageView = listItemBinding.expandCollapseIndicator
-    }
-
-    //set rating background colour based on rating value
-    private fun getRatingColour(rating: String): Int {
-        val ratingColourResourceId: Int = when (rating) {
-            "0" -> R.color.rating0
-            "1" -> R.color.rating1
-            "2" -> R.color.rating2
-            "3", "Improvement Required" -> R.color.rating3
-            "4" -> R.color.rating4
-            "5", "Pass", "Pass and Eat Safe" -> R.color.rating5
-            "Exempt", "AwaitingPublication", "AwaitingInspection" -> R.color.ratingNa
-            else -> R.color.ratingNa
-        }
-        return ContextCompat.getColor(context, ratingColourResourceId)
     }
 }
