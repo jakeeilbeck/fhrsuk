@@ -97,22 +97,19 @@ class AdapterUtils(var context: Context) {
 
     //If rating isn't available show reason why in place of the date
     fun getDate(rating: String, ratingDate: String): String {
-        //Convert String datetime to readable date
-        //https://stackoverflow.com/a/35939543
-        var ratingDate = ratingDate
-        var sdf = SimpleDateFormat("YYYY-MM-dd'T'hh:mm:ss")
+        val ratingDateFormatted: String
+        var sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:m:ss")
         val newDate: Date = sdf.parse(ratingDate)
         sdf = SimpleDateFormat("dd MMM yyyy")
-        ratingDate = sdf.format(newDate)
+        ratingDateFormatted = sdf.format(newDate)
 
         return when (rating) {
             "Exempt" -> context.getString(R.string.rating_exempt)
             "AwaitingPublication", "Awaiting Publication" -> context.getString(R.string.rating_awaiting_publication)
             "AwaitingInspection", "Awaiting Inspection" -> context.getString(R.string.rating_awaiting_inspection)
-            "Pass and Eat Safe" -> ratingDate
-            "Improvement Required" -> ratingDate
-            else -> ratingDate
-
+            "Pass and Eat Safe" -> ratingDateFormatted
+            "Improvement Required" -> ratingDateFormatted
+            else -> ratingDateFormatted
         }
     }
 
