@@ -13,8 +13,9 @@ This project includes:
 - RecyclerView
 - Paging Library
 - Retrofit
+- Moshi
 - Location Services
 - ViewPager2
 - View Binding
 
-![Screenshot of nearby view](https://i.imgur.com/t0seyDQ.png) ![Screenshot of search view](https://i.imgur.com/a3hDDKE.png)
+![Screenshot of nearby view](https://i.imgur.com/bINvRDE.png) ![Screenshot of search view](https://i.imgur.com/a3hDDKE.png)
