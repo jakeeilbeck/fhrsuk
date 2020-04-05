@@ -7,7 +7,7 @@ object NearbyLoadingState {
     var loadingState = MutableLiveData<Int>()
 
     init {
-        loadingState.value = 0
+        loadingState.value = 1
     }
 
     fun setLoadingState(currentState: Int){
