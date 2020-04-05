@@ -33,4 +33,9 @@
 
     <string name="card_indicator_description">Indicator icon for expanded / collapsed card item</string>
 
+    <string name="hygiene_breakdown_info">Hygienic handling of food including preparation, cooking, re-heating, cooling and storage</string>
+    <string name="structural_breakdown_info">Cleanliness and condition of facilities and building (including having appropriate layout, ventilation, hand washing facilities and pest control) to enable good food hygiene</string>
+    <string name="management_breakdown_info">System or checks in place to ensure that food sold or served is safe to eat, evidence that staff know about food safety, and the food safety officer has confidence that standards will be maintained in the future</string>
+    <string name="information_icon_description">Information icon</string>
+
 </resources>

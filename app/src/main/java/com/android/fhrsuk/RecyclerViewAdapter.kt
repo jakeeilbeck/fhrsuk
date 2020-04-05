@@ -1,10 +1,12 @@
 package com.android.fhrsuk
 
+import android.app.Dialog
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -68,6 +70,15 @@ class RecyclerViewAdapter(
             viewHolder.indicatorIcon.animate().rotation(0F).start()
             viewHolder.expandableAdditionalInfo.visibility = View.GONE
         }
+
+        viewHolder.infoIcon.setOnClickListener {
+            val dialog = Dialog(context)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setCancelable(true)
+            dialog.setContentView(R.layout.ratings_breakdown_info_dialog)
+            dialog.show()
+        }
+
     }
 
     companion object {
@@ -100,5 +111,6 @@ class RecyclerViewAdapter(
         val scoreBreakdownStructural: TextView = listItemBinding.scoreBreakdownStructural
         val scoreBreakdownManagement: TextView = listItemBinding.scoreBreakdownManagement
         val indicatorIcon: ImageView = listItemBinding.expandCollapseIndicator
+        val infoIcon: ImageView = listItemBinding.butonInfoDialog
     }
 }

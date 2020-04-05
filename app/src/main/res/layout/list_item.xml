@@ -246,6 +246,15 @@
                 Tools:layout_constraintTop_toBottomOf="@+id/score_breakdown_structural"
                 tools:text="Urgent improvement necessary" />
 
+            <ImageView
+                android:id="@+id/buton_info_dialog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                Tools:layout_constraintEnd_toEndOf="parent"
+                Tools:layout_constraintTop_toBottomOf="@+id/score_breakdown_management"
+                Tools:srcCompat="@drawable/ic_info_outline_black_24dp"
+                android:contentDescription="@string/information_icon_description" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
