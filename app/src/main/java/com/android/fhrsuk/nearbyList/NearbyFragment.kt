@@ -14,21 +14,30 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.paging.PagedList
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.fhrsuk.BuildConfig
+import com.android.fhrsuk.Injection
 import com.android.fhrsuk.R
 import com.android.fhrsuk.RecyclerViewAdapter
 import com.android.fhrsuk.databinding.FragmentNearbyListBinding
-import com.android.fhrsuk.models.Establishments
+import com.android.fhrsuk.utils.toVisibility
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 private const val PERMISSIONS_REQUEST_CODE = 11
 private const val TAG = "NearbyFragment"
 
+@InternalCoroutinesApi
+@ExperimentalCoroutinesApi
 class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
 
     private lateinit var recyclerView: RecyclerView
@@ -43,28 +52,33 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
 
     private var firstCall: Boolean = true
 
-    private var fragmentNearbyListBinding: FragmentNearbyListBinding? = null
+    private var searchJob: Job? = null
+
+    private var nearbyBinding: FragmentNearbyListBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
-        nearbyViewModel = ViewModelProvider(this).get(NearbyViewModel::class.java)
+
+        nearbyViewModel = ViewModelProvider(this, Injection.provideViewModelFactory())
+            .get(NearbyViewModel::class.java)
 
         //Observer for location updates
         val locationObserver = Observer<Location> { newLocation ->
 
+            //Update ViewModel with latest location
             nearbyViewModel.setLocation(newLocation)
-            nearbyViewModel.init()
 
-            //Only the first request should be triggered by location update
+            //Only the initial request should be triggered by location update
+            //Subsequent updates triggered by Swipe Refresh
             if (firstCall) {
                 init()
                 firstCall = false
             }
         }
 
+        //Start location updates and observe latest results
         locationServices = LocationServices(this.requireActivity())
-        locationServices.startLocationUpdates()
+        //locationServices.startLocationUpdates()
         locationServices.location.observe(this, locationObserver)
     }
 
@@ -72,25 +86,12 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
         super.onViewCreated(view, savedInstanceState)
 
         val binding = FragmentNearbyListBinding.bind(view)
-        fragmentNearbyListBinding = binding
-
+        nearbyBinding = binding
         swipeRefresh = binding.swipeRefresh
         progressBar = binding.progressbarList
         val fabUp: FloatingActionButton = binding.fabUp
 
-        //Display progressBar whilst location data loads
-        showProgressBar(true)
-
-        //show/hide progressBar based on retrofit loading status
-        val loadingStateObserver = Observer<Int> { currentState ->
-            if (currentState == 0) {
-                showProgressBar(false)
-            } else if (currentState == 1) {
-                showProgressBar(true)
-            }
-        }
-        nearbyViewModel.nearbyLoadingState.observe(viewLifecycleOwner, loadingStateObserver)
-
+        //fabUp will only be visible after the user has started scrolling
         fabUp.hide()
 
         adapter = RecyclerViewAdapter(requireContext())
@@ -121,6 +122,8 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
         swipeRefresh.setOnRefreshListener {
             init()
         }
+
+        nearbyBinding?.retryButton?.setOnClickListener { adapter.retry() }
     }
 
     override fun onStart() {
@@ -128,7 +131,6 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
 
         if (!checkPermissions()) {
             //Permission not granted - request permissions
-            showProgressBar(false)
             requestPermissions()
         } else {
             locationServices.startLocationUpdates()
@@ -136,32 +138,41 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
     }
 
     override fun onDestroyView() {
-        fragmentNearbyListBinding = null
+        nearbyBinding = null
         super.onDestroyView()
     }
 
     //Called initially and on each swipeRefresh
-    //Refreshes views with new data
+    @InternalCoroutinesApi
     private fun init() {
-        nearbyViewModel.itemPagedList.observe(viewLifecycleOwner,
-            Observer<PagedList<Establishments>> { items ->
-                items?.let {
+        nearbyBinding?.listRecyclerView?.adapter = adapter.withLoadStateHeaderAndFooter(
+            header = NearbyLoadStateAdapter { adapter.retry() },
+            footer = NearbyLoadStateAdapter { adapter.retry() }
+        )
 
-                    swipeRefresh.isRefreshing = false
-                    recyclerView.adapter = adapter
-                    adapter.submitList(items)
-                    adapter.notifyDataSetChanged()
-                }
-            })
-        showProgressBar(false)
-    }
-
-    private fun showProgressBar(setVisible: Boolean) {
-        if (setVisible) {
-            progressBar.visibility = View.VISIBLE
-        } else {
-            progressBar.visibility = View.GONE
+        adapter.addLoadStateListener { loadState ->
+            if (loadState.refresh !is LoadState.NotLoading) {
+                nearbyBinding?.listRecyclerView?.visibility = View.GONE
+                nearbyBinding?.progressbarList?.visibility =
+                    toVisibility(loadState.refresh is LoadState.Loading)
+                nearbyBinding?.retryButton?.visibility =
+                    toVisibility(loadState.refresh is LoadState.Error)
+            } else {
+                nearbyBinding?.listRecyclerView?.visibility = View.VISIBLE
+                nearbyBinding?.progressbarList?.visibility = View.GONE
+                nearbyBinding?.retryButton?.visibility = View.GONE
+            }
         }
+
+        //Cancel previous job then create a new one
+        searchJob?.cancel()
+        searchJob = lifecycleScope.launch {
+            nearbyViewModel.searchRepo().collectLatest {
+                adapter.submitData(it)
+            }
+        }
+
+        swipeRefresh.isRefreshing = false
     }
 
     //Check if permissions are granted
@@ -215,7 +226,6 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
                 // Permission granted.
                 (grantResults[0] == PackageManager.PERMISSION_GRANTED) -> {
                     locationServices.startLocationUpdates()
-                    showProgressBar(true)
                     Log.i(TAG, "Permission granted")
                 }
 

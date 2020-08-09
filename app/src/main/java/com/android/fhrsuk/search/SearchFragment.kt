@@ -6,38 +6,42 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.paging.PagedList
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.fhrsuk.Injection
 import com.android.fhrsuk.R
 import com.android.fhrsuk.RecyclerViewAdapter
 import com.android.fhrsuk.databinding.FragmentSearchBinding
-import com.android.fhrsuk.models.Establishments
+import com.android.fhrsuk.utils.toVisibility
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private lateinit var searchViewModel: SearchViewModel
-    private lateinit var progressBar: ProgressBar
 
-    private var fragmentSearchBinding: FragmentSearchBinding? = null
+    private var searchBinding: FragmentSearchBinding? = null
+
+    private var searchJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
-        searchViewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
+
+        searchViewModel = ViewModelProvider(this, Injection.provideSearchViewModelFactory())
+            .get(SearchViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val binding = FragmentSearchBinding.bind(view)
-        fragmentSearchBinding = binding
+        searchBinding = binding
 
         val searchNameText: EditText = binding.editTextName
         val searchLocationText: EditText = binding.editTextLocation
@@ -51,29 +55,14 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         val adapter = RecyclerViewAdapter(requireContext())
         val recyclerView: RecyclerView = binding.searchRecyclerView
 
-        progressBar = binding.progressbarSearch
-
-        //show/hide progressBar based on retrofit loading status
-        val loadingStateObserver = Observer<Int> { currentState ->
-            if (currentState == 0) {
-                showProgressBar(false)
-            } else if (currentState == 1) {
-                showProgressBar(true)
-            }
-        }
-        searchViewModel.searchLoadingState.observe(viewLifecycleOwner, loadingStateObserver)
-
         //stops 'blinking' effect when item is clicked
         recyclerView.itemAnimator?.changeDuration = 0
 
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = adapter
 
         fabUp.hide()
 
         searchButton.setOnClickListener {
-
-            recyclerView.visibility = View.INVISIBLE
 
             searchRestaurantName = searchNameText.text.toString().trim()
             searchLocation = searchLocationText.text.toString().trim()
@@ -83,21 +72,34 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             if (searchLocation.isEmpty()) searchLocation = ""
 
             searchViewModel.setSearchTerms(searchRestaurantName, searchLocation)
-            searchViewModel.init()
 
-            //Refreshes views with new data
-            searchViewModel.itemPagedList.observe(viewLifecycleOwner,
-                Observer<PagedList<Establishments>> { items ->
-                    items?.let {
 
-                        recyclerView.adapter = adapter
-                        adapter.submitList(items)
-                        adapter.notifyDataSetChanged()
-
-                        recyclerView.visibility = View.VISIBLE
-                    }
-                }
+            recyclerView.adapter = adapter.withLoadStateHeaderAndFooter(
+                header = SearchLoadStateAdapter { adapter.retry() },
+                footer = SearchLoadStateAdapter { adapter.retry() }
             )
+
+            adapter.addLoadStateListener { loadState ->
+                if (loadState.refresh !is LoadState.NotLoading) {
+                    searchBinding?.searchRecyclerView?.visibility = View.GONE
+                    searchBinding?.progressbarSearch?.visibility =
+                        toVisibility(loadState.refresh is LoadState.Loading)
+                    searchBinding?.retryButton?.visibility =
+                        toVisibility(loadState.refresh is LoadState.Error)
+                } else {
+                    searchBinding?.searchRecyclerView?.visibility = View.VISIBLE
+                    searchBinding?.progressbarSearch?.visibility = View.GONE
+                    searchBinding?.retryButton?.visibility = View.GONE
+                }
+            }
+
+            //Cancel previous job then create a new one
+            searchJob?.cancel()
+            searchJob = lifecycleScope.launch {
+                searchViewModel.searchRepo().collectLatest {
+                    adapter.submitData(it)
+                }
+            }
 
             //clear editText focus on search
             searchNameText.clearFocus()
@@ -109,6 +111,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 0
             )
         }
+
+        searchBinding?.retryButton?.setOnClickListener { adapter.retry() }
 
         //show/hide the fab button after scrolled passed ~1 page of results
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -127,13 +131,5 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             recyclerView.scrollToPosition(0)
         }
 
-    }
-
-    private fun showProgressBar(setVisible: Boolean) {
-        if (setVisible) {
-            progressBar.visibility = View.VISIBLE
-        } else {
-            progressBar.visibility = View.GONE
-        }
     }
 }

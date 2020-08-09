@@ -8,9 +8,11 @@ import androidx.viewpager2.widget.ViewPager2
 import com.android.fhrsuk.databinding.MainActivityBinding
 import com.android.fhrsuk.nearbyList.NearbyFragment
 import com.android.fhrsuk.search.SearchFragment
+import kotlinx.coroutines.InternalCoroutinesApi
 
 class MainActivity : AppCompatActivity() {
 
+    @InternalCoroutinesApi
     private val nearbyFragment = NearbyFragment()
     private val searchFragment = SearchFragment()
 
@@ -24,6 +26,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: MainActivityBinding
 
+    @InternalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

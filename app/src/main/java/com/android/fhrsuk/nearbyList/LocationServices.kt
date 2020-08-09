@@ -1,5 +1,6 @@
 package com.android.fhrsuk.nearbyList
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
 import android.os.Looper
@@ -19,6 +20,7 @@ class LocationServices(private val context: Context) {
 
     val location = MutableLiveData<Location>()
 
+    @SuppressLint("MissingPermission")
     fun startLocationUpdates() {
 
         Log.i(TAG, "Location updates started")

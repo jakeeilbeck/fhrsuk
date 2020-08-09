@@ -10,7 +10,7 @@ import android.view.Window
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.fhrsuk.databinding.ListItemBinding
@@ -19,7 +19,7 @@ import com.android.fhrsuk.utils.AdapterUtils
 
 class RecyclerViewAdapter(
     private var context: Context
-) : PagedListAdapter<Establishments, RecyclerViewAdapter.ViewHolder>(
+) : PagingDataAdapter<Establishments, RecyclerViewAdapter.ViewHolder>(
     diffCallback
 ) {
 
@@ -48,6 +48,7 @@ class RecyclerViewAdapter(
         viewHolder.scoreBreakdownManagement.text =
             adapterUtils.getBreakdownManagement(establishmentDetail.scores.confidenceInManagement)
 
+        //Set rating background square colour based on rating value
         val ratingBg = viewHolder.ratingTextView.background as GradientDrawable
         ratingBg.setColor(adapterUtils.getRatingBgColour(establishmentDetail.ratingValue))
 
@@ -71,6 +72,7 @@ class RecyclerViewAdapter(
             viewHolder.expandableAdditionalInfo.visibility = View.GONE
         }
 
+        //dialog box to give a breakdown on each of the rating categories
         viewHolder.infoIcon.setOnClickListener {
             val dialog = Dialog(context)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
