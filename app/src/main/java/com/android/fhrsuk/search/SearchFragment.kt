@@ -6,28 +6,32 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.fhrsuk.Injection
 import com.android.fhrsuk.R
-import com.android.fhrsuk.RecyclerViewAdapter
+import com.android.fhrsuk.adapters.RecyclerViewAdapter
 import com.android.fhrsuk.databinding.FragmentSearchBinding
-import com.android.fhrsuk.utils.toVisibility
+import com.android.fhrsuk.search.loadingState.SearchLoadStateAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private lateinit var searchViewModel: SearchViewModel
-
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: RecyclerViewAdapter
     private var searchBinding: FragmentSearchBinding? = null
-
     private var searchJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,20 +50,20 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         val searchNameText: EditText = binding.editTextName
         val searchLocationText: EditText = binding.editTextLocation
         val searchButton: Button = binding.buttonSearch
-
         val fabUp: FloatingActionButton = binding.fabUp
 
         var searchRestaurantName: String
         var searchLocation: String
 
-        val adapter = RecyclerViewAdapter(requireContext())
-        val recyclerView: RecyclerView = binding.searchRecyclerView
+        adapter = RecyclerViewAdapter(requireContext())
+        recyclerView = binding.searchRecyclerView
+
+        initAdapter()
 
         //stops 'blinking' effect when item is clicked
         recyclerView.itemAnimator?.changeDuration = 0
 
-        recyclerView.layoutManager = LinearLayoutManager(context)
-
+        //fabUp will only be visible after the user has started scrolling
         fabUp.hide()
 
         searchButton.setOnClickListener {
@@ -73,30 +77,10 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
             searchViewModel.setSearchTerms(searchRestaurantName, searchLocation)
 
-
-            recyclerView.adapter = adapter.withLoadStateHeaderAndFooter(
-                header = SearchLoadStateAdapter { adapter.retry() },
-                footer = SearchLoadStateAdapter { adapter.retry() }
-            )
-
-            adapter.addLoadStateListener { loadState ->
-                if (loadState.refresh !is LoadState.NotLoading) {
-                    searchBinding?.searchRecyclerView?.visibility = View.GONE
-                    searchBinding?.progressbarSearch?.visibility =
-                        toVisibility(loadState.refresh is LoadState.Loading)
-                    searchBinding?.retryButton?.visibility =
-                        toVisibility(loadState.refresh is LoadState.Error)
-                } else {
-                    searchBinding?.searchRecyclerView?.visibility = View.VISIBLE
-                    searchBinding?.progressbarSearch?.visibility = View.GONE
-                    searchBinding?.retryButton?.visibility = View.GONE
-                }
-            }
-
-            //Cancel previous job then create a new one
+            //Cancels previous job then create a new one to get data
             searchJob?.cancel()
             searchJob = lifecycleScope.launch {
-                searchViewModel.searchRepo().collectLatest {
+                searchViewModel.searchEstablishments().collectLatest {
                     adapter.submitData(it)
                 }
             }
@@ -110,6 +94,17 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 view.windowToken,
                 0
             )
+        }
+
+        //https://git.io/JUsKp
+        //Scroll to top of list on refresh
+        lifecycleScope.launch {
+            adapter.loadStateFlow
+                // Only emit when REFRESH LoadState for RemoteMediator changes.
+                .distinctUntilChangedBy { it.refresh }
+                // Only react to cases where Remote REFRESH completes i.e., NotLoading.
+                .filter { it.refresh is LoadState.NotLoading }
+                .collect{binding.searchRecyclerView.scrollToPosition(0)}
         }
 
         searchBinding?.retryButton?.setOnClickListener { adapter.retry() }
@@ -127,9 +122,37 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         })
 
         //scroll to top of list on click
-        fabUp.setOnClickListener {
-            recyclerView.scrollToPosition(0)
-        }
+        fabUp.setOnClickListener { lifecycleScope.launch { recyclerView.scrollToPosition(0) } }
+    }
 
+    private fun initAdapter() {
+        //Display progressBar or retry button for loading of data or failure of loading
+        recyclerView.adapter = adapter.withLoadStateHeaderAndFooter(
+            header = SearchLoadStateAdapter { adapter.retry() },
+            footer = SearchLoadStateAdapter { adapter.retry() }
+        )
+
+        //show / hide the header or footer views based on loading state
+        adapter.addLoadStateListener { loadState ->
+
+            searchBinding?.searchRecyclerView?.isVisible = loadState.source.refresh is LoadState.NotLoading
+            // Show progress bar during initial load or refresh.
+            searchBinding?.progressbarSearch?.isVisible = loadState.source.refresh is LoadState.Loading
+            // Show the retry button if initial load or refresh fails.
+            searchBinding?.retryButton?.isVisible = loadState.source.refresh is LoadState.Error
+            // Show message if no results
+            if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && adapter.itemCount <1){
+                recyclerView.isVisible = false
+                no_results_text.isVisible = true
+            }else{
+                no_results_text.isVisible = false
+            }
+
+        }
+    }
+
+    override fun onDestroyView() {
+        searchBinding = null
+        super.onDestroyView()
     }
 }

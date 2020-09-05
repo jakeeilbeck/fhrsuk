@@ -1,9 +1,11 @@
 package com.android.fhrsuk.search
 
-import androidx.lifecycle.*
-import androidx.paging.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.android.fhrsuk.models.Establishments
-import com.android.fhrsuk.network.SearchRepository
+import com.android.fhrsuk.search.data.SearchRepository
 import kotlinx.coroutines.flow.Flow
 
 class SearchViewModel(private val repository: SearchRepository) : ViewModel() {
@@ -15,12 +17,13 @@ class SearchViewModel(private val repository: SearchRepository) : ViewModel() {
 
     private var currentSearchResult: Flow<PagingData<Establishments>>? = null
 
-    fun searchRepo(): Flow<PagingData<Establishments>> {
+    fun searchEstablishments(): Flow<PagingData<Establishments>> {
         val lastResult = currentSearchResult
-        if (name + location == currentQueryValue && lastResult != null) {
+        if ((name + location == currentQueryValue) && (lastResult != null)) {
             return lastResult
         }
         currentQueryValue = name + location
+
         val newResult: Flow<PagingData<Establishments>> =
             repository.getEstablishmentsStream(name, location).cachedIn(viewModelScope)
         currentSearchResult = newResult
@@ -31,54 +34,4 @@ class SearchViewModel(private val repository: SearchRepository) : ViewModel() {
         this.name = name
         this.location = location
     }
-
 }
-
-
-//class SearchViewModel(application: Application) : AndroidViewModel(application) {
-//
-//    private lateinit var name: String
-//    private lateinit var location: String
-//
-//    lateinit var itemPagedList: LiveData<PagedList<Establishments>>
-//    lateinit var liveDataSource: LiveData<PageKeyedDataSource<Int, Establishments>>
-//    private lateinit var itemDataSourceFactory: SearchDataSourceFactory
-//
-//    private val loadingState = SearchLoadingState.loadingState
-//    val searchLoadingState = MutableLiveData(0)
-//    lateinit var stateObserver: Observer<Int>
-//
-//    fun init() {
-//
-//        itemDataSourceFactory = SearchDataSourceFactory(
-//            this.getApplication(),
-//            name,
-//            location
-//        )
-//
-//        liveDataSource = itemDataSourceFactory.getItemLiveDataSource()
-//
-//        val config = PagedList.Config.Builder()
-//            .setEnablePlaceholders(false)
-//            .setPageSize(50)
-//            .build()
-//
-//        itemPagedList = LivePagedListBuilder(itemDataSourceFactory, config).build()
-//
-//        //observe loading state or retrofit in singleton
-//        stateObserver = Observer { currentState ->
-//            searchLoadingState.value = currentState
-//        }
-//        loadingState.observeForever(stateObserver)
-//    }
-//
-//    fun setSearchTerms(name: String, location: String) {
-//        this.name = name
-//        this.location = location
-//    }
-//
-//    override fun onCleared() {
-//        loadingState.removeObserver(stateObserver)
-//        super.onCleared()
-//    }
-//}

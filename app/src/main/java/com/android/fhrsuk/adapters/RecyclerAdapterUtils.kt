@@ -1,12 +1,11 @@
-package com.android.fhrsuk.utils
+package com.android.fhrsuk.adapters
 
 import android.content.Context
 import androidx.core.content.ContextCompat
 import com.android.fhrsuk.R
-import java.text.SimpleDateFormat
-import java.util.*
+import java.time.format.DateTimeFormatter.ofPattern
 
-class AdapterUtils(var context: Context) {
+class RecyclerAdapterUtils(var context: Context) {
 
     fun getBreakdownHygiene(rating: Int?): String {
         return when (rating) {
@@ -97,11 +96,10 @@ class AdapterUtils(var context: Context) {
 
     //If rating isn't available show reason why in place of the date
     fun getDate(rating: String, ratingDate: String): String {
-        val ratingDateFormatted: String
-        var sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:m:ss")
-        val newDate: Date = sdf.parse(ratingDate)
-        sdf = SimpleDateFormat("dd MMM yyyy")
-        ratingDateFormatted = sdf.format(newDate)
+
+        val currentFormat = ofPattern("yyyy-MM-dd'T'HH:m:ss")
+        val date = currentFormat.parse(ratingDate)
+        val ratingDateFormatted = ofPattern("dd MMM yyyy").format(date)
 
         return when (rating) {
             "Exempt" -> context.getString(R.string.rating_exempt)

@@ -6,11 +6,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.android.fhrsuk.models.Establishments
-import com.android.fhrsuk.network.NearbyRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.android.fhrsuk.nearbyList.data.NearbyRepository
 import kotlinx.coroutines.flow.Flow
 
-@ExperimentalCoroutinesApi
 class NearbyViewModel(private val repository: NearbyRepository) : ViewModel() {
 
     private lateinit var longitude: String
@@ -20,12 +18,13 @@ class NearbyViewModel(private val repository: NearbyRepository) : ViewModel() {
 
     private var currentSearchResult: Flow<PagingData<Establishments>>? = null
 
-    fun searchRepo(): Flow<PagingData<Establishments>> {
+    fun searchEstablishments(): Flow<PagingData<Establishments>> {
         val lastResult = currentSearchResult
-        if (longitude + latitude == currentQueryValue && lastResult != null) {
+        if ((longitude + latitude == currentQueryValue) && (lastResult != null)) {
             return lastResult
         }
         currentQueryValue = longitude + latitude
+
         val newResult: Flow<PagingData<Establishments>> =
             repository.getEstablishmentsStream(longitude, latitude).cachedIn(viewModelScope)
         currentSearchResult = newResult

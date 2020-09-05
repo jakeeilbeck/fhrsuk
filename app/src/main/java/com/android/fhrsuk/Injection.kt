@@ -2,32 +2,26 @@ package com.android.fhrsuk
 
 import androidx.lifecycle.ViewModelProvider
 import com.android.fhrsuk.nearbyList.NearbyViewModelFactory
-import com.android.fhrsuk.network.NearbyRepository
-import com.android.fhrsuk.network.RetrofitService
-import com.android.fhrsuk.network.SearchRepository
+import com.android.fhrsuk.nearbyList.data.NearbyRepository
+import com.android.fhrsuk.api.RetrofitService
+import com.android.fhrsuk.search.data.SearchRepository
 import com.android.fhrsuk.search.SearchViewModelFactory
 
 object Injection {
-    /**
-     * Creates an instance of [GithubRepository] based on the [GithubService] and a
-     * [GithubLocalCache]
-     */
-    private fun provideGithubRepository(): NearbyRepository {
+
+    //basic dependency injection for the ViewModels and the Repositories
+
+    private fun provideNearbyRepository(): NearbyRepository {
         return NearbyRepository(RetrofitService.create())
     }
 
-    /**
-     * Provides the [ViewModelProvider.Factory] that is then used to get a reference to
-     * [ViewModel] objects.
-     */
-    fun provideViewModelFactory(): ViewModelProvider.Factory {
-        return NearbyViewModelFactory(provideGithubRepository())
+    fun provideNearbyViewModelFactory(): ViewModelProvider.Factory {
+        return NearbyViewModelFactory(provideNearbyRepository())
     }
 
     private fun provideSearchRepository(): SearchRepository {
         return SearchRepository(RetrofitService.create())
     }
-
 
     fun provideSearchViewModelFactory(): ViewModelProvider.Factory {
         return SearchViewModelFactory(provideSearchRepository())

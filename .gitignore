@@ -13,3 +13,5 @@
 .externalNativeBuild
 '.idea' 
 .idea
+/app/src/androidTest/java/com/android/fhrsuk/
+/app/src/test/java/com/android/fhrsuk/

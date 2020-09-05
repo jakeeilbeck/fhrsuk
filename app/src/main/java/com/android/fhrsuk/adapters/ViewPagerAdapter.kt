@@ -1,4 +1,4 @@
-package com.android.fhrsuk
+package com.android.fhrsuk.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

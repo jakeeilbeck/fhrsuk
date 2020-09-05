@@ -1,4 +1,4 @@
-package com.android.fhrsuk.network
+package com.android.fhrsuk.api
 
 import com.android.fhrsuk.models.JsonBase
 import com.squareup.moshi.Moshi
@@ -53,5 +53,4 @@ interface RetrofitService {
                 .create(RetrofitService::class.java)
         }
     }
-
 }

@@ -2,7 +2,7 @@ package com.android.fhrsuk.nearbyList
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.android.fhrsuk.network.NearbyRepository
+import com.android.fhrsuk.nearbyList.data.NearbyRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class NearbyViewModelFactory(private val repository: NearbyRepository) : ViewModelProvider.Factory {

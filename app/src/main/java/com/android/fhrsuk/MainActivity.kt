@@ -5,13 +5,19 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
+import com.android.fhrsuk.adapters.ViewPagerAdapter
 import com.android.fhrsuk.databinding.MainActivityBinding
 import com.android.fhrsuk.nearbyList.NearbyFragment
 import com.android.fhrsuk.search.SearchFragment
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
+
+private const val ICON_SELECTED_ALPHA: Int = 255
+private const val ICON_UNSELECTED_ALPHA: Int = 137
 
 class MainActivity : AppCompatActivity() {
 
+    @ExperimentalCoroutinesApi
     @InternalCoroutinesApi
     private val nearbyFragment = NearbyFragment()
     private val searchFragment = SearchFragment()
@@ -19,13 +25,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var searchIcon: MenuItem
     private lateinit var listIcon: MenuItem
 
-    private val iconSelectedAlpha: Int = 255
-    private val iconUnselectedAlpha: Int = 137
-
     private lateinit var viewPager2: ViewPager2
 
     private lateinit var binding: MainActivityBinding
 
+    @ExperimentalCoroutinesApi
     @InternalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +40,10 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
 
             viewPager2 = binding.viewPager
-            val pagerAdapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
+            val pagerAdapter = ViewPagerAdapter(
+                supportFragmentManager,
+                lifecycle
+            )
 
             pagerAdapter.addFragment(nearbyFragment)
             pagerAdapter.addFragment(searchFragment)
@@ -44,11 +51,14 @@ class MainActivity : AppCompatActivity() {
             viewPager2.adapter = pagerAdapter
 
         } else {
-            //Prevent viewPager2 causing crashes on process death in onPrepareOptionsMenu
+            //Prevent viewPager2 causing crashes after process death in onPrepareOptionsMenu
             //by ensuring that an instance exists
             if (!this::viewPager2.isInitialized) {
                 viewPager2 = binding.viewPager
-                val pagerAdapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
+                val pagerAdapter = ViewPagerAdapter(
+                    supportFragmentManager,
+                    lifecycle
+                )
 
                 pagerAdapter.addFragment(nearbyFragment)
                 pagerAdapter.addFragment(searchFragment)
@@ -60,31 +70,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //options menu used for navigation between fragments in addition to swipe
+    //options menu used for navigation between fragments in addition to swiping
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_switch_fragment, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
-    //Set initial icon alpha
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         searchIcon = menu!!.findItem(R.id.switch_to_search)
         listIcon = menu.findItem(R.id.switch_to_list)
 
-        searchIcon.icon.alpha = iconUnselectedAlpha
+        searchIcon.icon.alpha = ICON_UNSELECTED_ALPHA
 
-        //Set icon alpha if user swiped between fragments
+        //Set icon alpha if user switched between fragments
         viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 when (position) {
                     0 -> {
-                        listIcon.icon.alpha = iconSelectedAlpha
-                        searchIcon.icon.alpha = iconUnselectedAlpha
+                        listIcon.icon.alpha = ICON_SELECTED_ALPHA
+                        searchIcon.icon.alpha = ICON_UNSELECTED_ALPHA
                     }
                     1 -> {
-                        listIcon.icon.alpha = iconUnselectedAlpha
-                        searchIcon.icon.alpha = iconSelectedAlpha
+                        listIcon.icon.alpha = ICON_UNSELECTED_ALPHA
+                        searchIcon.icon.alpha = ICON_SELECTED_ALPHA
                     }
                 }
             }
@@ -98,16 +107,16 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.switch_to_list -> {
 
-                listIcon.icon.alpha = iconSelectedAlpha
-                searchIcon.icon.alpha = iconUnselectedAlpha
+                listIcon.icon.alpha = ICON_SELECTED_ALPHA
+                searchIcon.icon.alpha = ICON_UNSELECTED_ALPHA
 
                 viewPager2.setCurrentItem(0, true)
             }
 
             R.id.switch_to_search -> {
 
-                listIcon.icon.alpha = iconUnselectedAlpha
-                searchIcon.icon.alpha = iconSelectedAlpha
+                listIcon.icon.alpha = ICON_UNSELECTED_ALPHA
+                searchIcon.icon.alpha = ICON_SELECTED_ALPHA
 
                 viewPager2.setCurrentItem(1, true)
             }
@@ -119,8 +128,8 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
 
         if (viewPager2.currentItem == 1) {
-            this.listIcon.icon.alpha = iconSelectedAlpha
-            this.searchIcon.icon.alpha = iconUnselectedAlpha
+            this.listIcon.icon.alpha = ICON_SELECTED_ALPHA
+            this.searchIcon.icon.alpha = ICON_UNSELECTED_ALPHA
             viewPager2.setCurrentItem(0, true)
 
         } else {

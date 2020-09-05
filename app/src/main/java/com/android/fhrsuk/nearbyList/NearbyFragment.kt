@@ -9,76 +9,69 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.View
-import android.widget.ProgressBar
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.fhrsuk.BuildConfig
 import com.android.fhrsuk.Injection
 import com.android.fhrsuk.R
-import com.android.fhrsuk.RecyclerViewAdapter
+import com.android.fhrsuk.adapters.RecyclerViewAdapter
 import com.android.fhrsuk.databinding.FragmentNearbyListBinding
-import com.android.fhrsuk.utils.toVisibility
+import com.android.fhrsuk.nearbyList.loadingState.NearbyLoadStateAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 private const val PERMISSIONS_REQUEST_CODE = 11
 private const val TAG = "NearbyFragment"
 
-@InternalCoroutinesApi
-@ExperimentalCoroutinesApi
 class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RecyclerViewAdapter
-
     private lateinit var swipeRefresh: SwipeRefreshLayout
-    private lateinit var progressBar: ProgressBar
-
     private lateinit var nearbyViewModel: NearbyViewModel
-
     private lateinit var locationServices: LocationServices
-
+    private var searchJob: Job? = null
+    private var nearbyBinding: FragmentNearbyListBinding? = null
     private var firstCall: Boolean = true
 
-    private var searchJob: Job? = null
-
-    private var nearbyBinding: FragmentNearbyListBinding? = null
+    private lateinit var location: Location
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        nearbyViewModel = ViewModelProvider(this, Injection.provideViewModelFactory())
+        nearbyViewModel = ViewModelProvider(this, Injection.provideNearbyViewModelFactory())
             .get(NearbyViewModel::class.java)
 
         //Observer for location updates
         val locationObserver = Observer<Location> { newLocation ->
 
-            //Update ViewModel with latest location
-            nearbyViewModel.setLocation(newLocation)
+            location = newLocation
 
-            //Only the initial request should be triggered by location update
+            //Only the initial request of the session should be triggered by a location update
             //Subsequent updates triggered by Swipe Refresh
             if (firstCall) {
-                init()
+                nearbyViewModel.setLocation(newLocation)
+                getEstablishments()
                 firstCall = false
             }
         }
 
         //Start location updates and observe latest results
         locationServices = LocationServices(this.requireActivity())
-        //locationServices.startLocationUpdates()
         locationServices.location.observe(this, locationObserver)
     }
 
@@ -88,19 +81,18 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
         val binding = FragmentNearbyListBinding.bind(view)
         nearbyBinding = binding
         swipeRefresh = binding.swipeRefresh
-        progressBar = binding.progressbarList
         val fabUp: FloatingActionButton = binding.fabUp
 
         //fabUp will only be visible after the user has started scrolling
         fabUp.hide()
 
         adapter = RecyclerViewAdapter(requireContext())
+
         recyclerView = binding.listRecyclerView
+        initAdapter()
 
         //stops 'blinking' effect when item is clicked
         recyclerView.itemAnimator?.changeDuration = 0
-
-        recyclerView.layoutManager = LinearLayoutManager(context)
 
         // Show/hide the fab button after scrolled passed ~1 page of results
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -115,15 +107,66 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
         })
 
         //scroll to top of list on click
-        fabUp.setOnClickListener {
-            recyclerView.scrollToPosition(0)
-        }
+        fabUp.setOnClickListener { lifecycleScope.launch { recyclerView.scrollToPosition(0) } }
 
         swipeRefresh.setOnRefreshListener {
-            init()
+            //Update ViewModel with latest location then search
+            nearbyViewModel.setLocation(location)
+            getEstablishments()
+        }
+
+        //https://git.io/JUsKp
+        //Scroll to top of list on refresh
+        lifecycleScope.launch {
+            adapter.loadStateFlow
+                // Only emit when REFRESH LoadState for RemoteMediator changes.
+                .distinctUntilChangedBy { it.refresh }
+                // Only react to cases where Remote REFRESH completes i.e., NotLoading.
+                .filter { it.refresh is LoadState.NotLoading }
+                .collect{binding.listRecyclerView.scrollToPosition(0)}
         }
 
         nearbyBinding?.retryButton?.setOnClickListener { adapter.retry() }
+    }
+
+    private fun initAdapter() {
+        //Display progressBar or retry button for loading of data or failure of loading
+        nearbyBinding?.listRecyclerView?.adapter = adapter.withLoadStateHeaderAndFooter(
+            header = NearbyLoadStateAdapter { adapter.retry() },
+            footer = NearbyLoadStateAdapter { adapter.retry() }
+        )
+
+        //show / hide the header or footer views based on loading state
+        adapter.addLoadStateListener { loadState ->
+
+            // Only show the list if refresh succeeds.
+            nearbyBinding?.listRecyclerView?.isVisible = loadState.source.refresh is LoadState.NotLoading
+            // Show progress bar during initial load or refresh.
+            nearbyBinding?.progressbarList?.isVisible = loadState.source.refresh is LoadState.Loading
+            // Show the retry button if initial load or refresh fails.
+            nearbyBinding?.retryButton?.isVisible = loadState.source.refresh is LoadState.Error
+            // Show message if no results
+            if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && adapter.itemCount <1){
+                recyclerView.isVisible = false
+                no_results_text.isVisible = true
+            }else{
+                no_results_text.isVisible = false
+            }
+        }
+    }
+
+    //Called initially and on each swipeRefresh
+    private fun getEstablishments() {
+
+        //Cancels previous job then create a new one to get data
+        searchJob?.cancel()
+        searchJob = lifecycleScope.launch {
+            nearbyViewModel.searchEstablishments().collectLatest {
+                adapter.submitData(it)
+            }
+        }
+
+        swipeRefresh.isRefreshing = false
     }
 
     override fun onStart() {
@@ -140,39 +183,6 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
     override fun onDestroyView() {
         nearbyBinding = null
         super.onDestroyView()
-    }
-
-    //Called initially and on each swipeRefresh
-    @InternalCoroutinesApi
-    private fun init() {
-        nearbyBinding?.listRecyclerView?.adapter = adapter.withLoadStateHeaderAndFooter(
-            header = NearbyLoadStateAdapter { adapter.retry() },
-            footer = NearbyLoadStateAdapter { adapter.retry() }
-        )
-
-        adapter.addLoadStateListener { loadState ->
-            if (loadState.refresh !is LoadState.NotLoading) {
-                nearbyBinding?.listRecyclerView?.visibility = View.GONE
-                nearbyBinding?.progressbarList?.visibility =
-                    toVisibility(loadState.refresh is LoadState.Loading)
-                nearbyBinding?.retryButton?.visibility =
-                    toVisibility(loadState.refresh is LoadState.Error)
-            } else {
-                nearbyBinding?.listRecyclerView?.visibility = View.VISIBLE
-                nearbyBinding?.progressbarList?.visibility = View.GONE
-                nearbyBinding?.retryButton?.visibility = View.GONE
-            }
-        }
-
-        //Cancel previous job then create a new one
-        searchJob?.cancel()
-        searchJob = lifecycleScope.launch {
-            nearbyViewModel.searchRepo().collectLatest {
-                adapter.submitData(it)
-            }
-        }
-
-        swipeRefresh.isRefreshing = false
     }
 
     //Check if permissions are granted

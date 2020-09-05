@@ -1,4 +1,4 @@
-package com.android.fhrsuk
+package com.android.fhrsuk.adapters
 
 import android.app.Dialog
 import android.content.Context
@@ -13,17 +13,14 @@ import androidx.cardview.widget.CardView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.android.fhrsuk.R
 import com.android.fhrsuk.databinding.ListItemBinding
 import com.android.fhrsuk.models.Establishments
-import com.android.fhrsuk.utils.AdapterUtils
 
-class RecyclerViewAdapter(
-    private var context: Context
-) : PagingDataAdapter<Establishments, RecyclerViewAdapter.ViewHolder>(
-    diffCallback
-) {
+class RecyclerViewAdapter(private var context: Context) :
+    PagingDataAdapter<Establishments, RecyclerViewAdapter.ViewHolder>(diffCallback) {
 
-    private val adapterUtils = AdapterUtils(context)
+    private val adapterUtils = RecyclerAdapterUtils(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(context)
@@ -35,18 +32,14 @@ class RecyclerViewAdapter(
         val establishmentDetail: Establishments? = getItem(position)
         viewHolder.nameTextView.text = establishmentDetail!!.businessName
         viewHolder.ratingTextView.text = adapterUtils.getRating(establishmentDetail.ratingValue)
-        viewHolder.inspectionDateTextView.text =
-            adapterUtils.getDate(establishmentDetail.ratingValue, establishmentDetail.ratingDate)
+        viewHolder.inspectionDateTextView.text = adapterUtils.getDate(establishmentDetail.ratingValue, establishmentDetail.ratingDate)
         viewHolder.address1TextView.text = establishmentDetail.addressLine1
         viewHolder.address2TextView.text = establishmentDetail.addressLine2
         viewHolder.postcodeTextView.text = establishmentDetail.postCode
         viewHolder.businessTypeTextView.text = establishmentDetail.businessType
-        viewHolder.scoreBreakdownHygiene.text =
-            adapterUtils.getBreakdownHygiene(establishmentDetail.scores.hygiene)
-        viewHolder.scoreBreakdownStructural.text =
-            adapterUtils.getBreakdownStructural(establishmentDetail.scores.structural)
-        viewHolder.scoreBreakdownManagement.text =
-            adapterUtils.getBreakdownManagement(establishmentDetail.scores.confidenceInManagement)
+        viewHolder.scoreBreakdownHygiene.text = adapterUtils.getBreakdownHygiene(establishmentDetail.scores.hygiene)
+        viewHolder.scoreBreakdownStructural.text = adapterUtils.getBreakdownStructural(establishmentDetail.scores.structural)
+        viewHolder.scoreBreakdownManagement.text = adapterUtils.getBreakdownManagement(establishmentDetail.scores.confidenceInManagement)
 
         //Set rating background square colour based on rating value
         val ratingBg = viewHolder.ratingTextView.background as GradientDrawable
@@ -72,7 +65,7 @@ class RecyclerViewAdapter(
             viewHolder.expandableAdditionalInfo.visibility = View.GONE
         }
 
-        //dialog box to give a breakdown on each of the rating categories
+        //dialog box to give a explanation on each of the rating categories
         viewHolder.infoIcon.setOnClickListener {
             val dialog = Dialog(context)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -95,6 +88,7 @@ class RecyclerViewAdapter(
                 oldItem: Establishments,
                 newItem: Establishments
             ): Boolean = oldItem == newItem
+
         }
     }
 

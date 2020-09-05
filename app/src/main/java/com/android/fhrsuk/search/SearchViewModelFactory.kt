@@ -2,7 +2,7 @@ package com.android.fhrsuk.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.android.fhrsuk.network.SearchRepository
+import com.android.fhrsuk.search.data.SearchRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class SearchViewModelFactory(private val repository: SearchRepository) : ViewModelProvider.Factory {

@@ -14,6 +14,7 @@
     <string name="search_missing_text">Missing text! Please enter text into both fields</string>
     <string name="response_no_data_found">Nothing found!</string>
     <string name="response_no_connection">No internet connection!</string>
+    <string name="retry">Retry</string>
 
     <string name="permission_rationale">Location permission necessary for nearby restaurant ratings</string>
     <string name="permission_denied_explanation">Location permission needed!</string>
@@ -37,6 +38,5 @@
     <string name="structural_breakdown_info">Cleanliness and condition of facilities and building (including having appropriate layout, ventilation, hand washing facilities and pest control) to enable good food hygiene</string>
     <string name="management_breakdown_info">System or checks in place to ensure that food sold or served is safe to eat, evidence that staff know about food safety, and the food safety officer has confidence that standards will be maintained in the future</string>
     <string name="information_icon_description">Information icon</string>
-    <string name="retry">Retry</string>
 
 </resources>
