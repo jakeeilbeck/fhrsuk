@@ -6,6 +6,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -71,29 +72,31 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             searchRestaurantName = searchNameText.text.toString().trim()
             searchLocation = searchLocationText.text.toString().trim()
 
-            //Replace empty search term with empty string / wildcard
-            if (searchRestaurantName.isEmpty()) searchRestaurantName = ""
-            if (searchLocation.isEmpty()) searchLocation = ""
+            if (searchRestaurantName.isEmpty() && searchLocation.isEmpty()){
+                //Hide keyboard first to make Toast more visible (if open)
+                hideKeyboard(view)
+                Toast.makeText(context, "Please enter at least 1 search term", Toast.LENGTH_SHORT).show()
+            }else{
+                //Replace empty search term with empty string / wildcard
+                if (searchRestaurantName.isEmpty()) searchRestaurantName = ""
+                if (searchLocation.isEmpty()) searchLocation = ""
 
-            searchViewModel.setSearchTerms(searchRestaurantName, searchLocation)
+                searchViewModel.setSearchTerms(searchRestaurantName, searchLocation)
 
-            //Cancels previous job then create a new one to get data
-            searchJob?.cancel()
-            searchJob = lifecycleScope.launch {
-                searchViewModel.searchEstablishments().collectLatest {
-                    adapter.submitData(it)
+                //Cancels previous job then create a new one to get data
+                searchJob?.cancel()
+                searchJob = lifecycleScope.launch {
+                    searchViewModel.searchEstablishments().collectLatest {
+                        adapter.submitData(it)
+                    }
                 }
+
+                //clear editText focus on search
+                searchNameText.clearFocus()
+                searchLocationText.clearFocus()
+
+                hideKeyboard(view)
             }
-
-            //clear editText focus on search
-            searchNameText.clearFocus()
-            searchLocationText.clearFocus()
-
-            //hide keyboard
-            (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
-                view.windowToken,
-                0
-            )
         }
 
         //https://git.io/JUsKp
@@ -123,6 +126,13 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
         //scroll to top of list on click
         fabUp.setOnClickListener { lifecycleScope.launch { recyclerView.scrollToPosition(0) } }
+    }
+
+    private fun hideKeyboard(view: View){
+        (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
+            view.windowToken,
+            0
+        )
     }
 
     private fun initAdapter() {
