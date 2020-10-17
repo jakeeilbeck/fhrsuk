@@ -10,13 +10,10 @@ import kotlinx.coroutines.flow.Flow
 class SearchRepository(private val service: RetrofitService) {
     fun getEstablishmentsStream(name: String, location: String): Flow<PagingData<Establishments>> {
         return Pager(
-            config = PagingConfig(pageSize = 50),
-            pagingSourceFactory = {
-                SearchPagingSource(
-                    service,
-                    name,
-                    location
-                )
+            config = PagingConfig(
+                pageSize = 50,
+                initialLoadSize = 50),
+            pagingSourceFactory = {SearchPagingSource(service, name, location)
             }
         ).flow
     }

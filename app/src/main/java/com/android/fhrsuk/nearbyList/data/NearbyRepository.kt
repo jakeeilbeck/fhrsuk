@@ -10,7 +10,9 @@ import com.android.fhrsuk.api.RetrofitService
 class NearbyRepository(private val service: RetrofitService) {
     fun getEstablishmentsStream(longitude: String, latitude: String): Flow<PagingData<Establishments>> {
         return Pager(
-            config = PagingConfig(pageSize = 50),
+            config = PagingConfig(
+                pageSize = 50,
+                initialLoadSize = 50),
             pagingSourceFactory = {NearbyPagingSource(service, longitude, latitude)
             }
         ).flow
