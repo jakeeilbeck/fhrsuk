@@ -7,15 +7,16 @@ of relevant establishments: either based on user location or based on a user sea
 This project includes:
 - Kotlin
 - Single Activiy multiple Fragments
-- MVVM Architecture
 - ViewModel
 - LiveData
+- Coroutines
+- Flow
 - RecyclerView
-- Paging Library
+- Paging3
 - Retrofit
 - Moshi
 - Location Services
 - ViewPager2
 - View Binding
 
-![Screenshot of nearby view](https://i.imgur.com/bINvRDE.png) ![Screenshot of search view](https://i.imgur.com/a3hDDKE.png)
+![Screenshot of nearby view](https://i.imgur.com/yAUmKfq.png) ![Screenshot of search view](https://i.imgur.com/iUC2TjQ.png)
