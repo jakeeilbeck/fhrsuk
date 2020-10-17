@@ -70,7 +70,7 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
             }
         }
 
-        //Start location updates and observe latest results
+        //Initialise location updates and observe latest results
         locationServices = LocationServices(this.requireActivity())
         locationServices.location.observe(this, locationObserver)
     }
@@ -138,7 +138,6 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
 
         //show / hide the header or footer views based on loading state
         adapter.addLoadStateListener { loadState ->
-
             // Only show the list if refresh succeeds.
             nearbyBinding?.listRecyclerView?.isVisible = loadState.source.refresh is LoadState.NotLoading
             // Show progress bar during initial load or refresh.
