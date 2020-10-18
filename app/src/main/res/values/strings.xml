@@ -39,4 +39,6 @@
     <string name="management_breakdown_info">System or checks in place to ensure that food sold or served is safe to eat, evidence that staff know about food safety, and the food safety officer has confidence that standards will be maintained in the future</string>
     <string name="information_icon_description">Information icon</string>
 
+    <string name="fab_description">FAB: Scroll to top of page</string>
+
 </resources>

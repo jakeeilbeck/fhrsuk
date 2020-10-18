@@ -3,19 +3,19 @@
 
     <color name="colorPrimary">#272C46</color>
     <color name="colorPrimaryDark">#1B1F31</color>
-    <color name="colorAccent">#3ED3D3</color>
+    <color name="colorAccent">#1667ce</color>
     <color name="colorDivider">#65524949</color>
 
-    <color name="background">#EDEDE7</color>
-    <color name="cardBackground">#FFFFFF</color>
+    <color name="background">#232637</color>
+    <color name="cardBackground">#272C46</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
 
-    <color name="textHeading">#323D67</color>
-    <color name="textSubHeading">#AFB3BF</color>
-    <color name="textAdditionalInfo">#B6B9C4</color>
+    <color name="textHeading">#FFFFFF</color>
+    <color name="textSubHeading">#99FFFFFF</color>
+    <color name="textAdditionalInfo">#33FFFFFF</color>
 
-    <color name="textRatingBreakdown">#AFB3BF</color>
+    <color name="textRatingBreakdown">#FFFFFF</color>
 
     <color name="rating5">#2ecc71</color>
     <color name="rating4">#CDDC39</color>

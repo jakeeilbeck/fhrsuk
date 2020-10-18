@@ -12,7 +12,7 @@
     android:layout_marginTop="8dp"
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="4dp"
-    Tools:cardBackgroundColor="@color/colorPrimary"
+    Tools:cardBackgroundColor="@color/cardBackground"
     Tools:cardCornerRadius="4dp"
     Tools:cardElevation="1dp"
     Tools:layout_constraintBottom_toBottomOf="parent"
@@ -39,6 +39,7 @@
             android:textStyle="bold"
             Tools:layout_constraintStart_toStartOf="parent"
             Tools:layout_constraintTop_toTopOf="parent"
+            tools:backgroundTint="@color/rating2"
             tools:text="5" />
 
 
@@ -102,10 +103,10 @@
             android:id="@+id/expand_collapse_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/card_indicator_description"
             Tools:layout_constraintEnd_toEndOf="parent"
             Tools:layout_constraintTop_toTopOf="@+id/postcode"
-            Tools:srcCompat="@drawable/ic_keyboard_arrow_down_black_24dp"
-            android:contentDescription="@string/card_indicator_description" />
+            Tools:srcCompat="@drawable/ic_keyboard_arrow_down_black_24dp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/expandable_additional_info"
@@ -131,6 +132,7 @@
 
             <TextView
                 android:id="@+id/business_type_title"
+                style="@style/textRatingBreakdown"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -145,6 +147,7 @@
 
             <TextView
                 android:id="@+id/business_type"
+                style="@style/textRatingBreakdown"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -161,6 +164,7 @@
 
             <TextView
                 android:id="@+id/score_breakdown_hygiene_heading"
+                style="@style/textRatingBreakdown"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -176,6 +180,7 @@
 
             <TextView
                 android:id="@+id/score_breakdown_hygiene"
+                style="@style/textRatingBreakdown"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -190,6 +195,7 @@
 
             <TextView
                 android:id="@+id/score_breakdown_structural_heading"
+                style="@style/textRatingBreakdown"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -205,6 +211,7 @@
 
             <TextView
                 android:id="@+id/score_breakdown_structural"
+                style="@style/textRatingBreakdown"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -219,6 +226,7 @@
 
             <TextView
                 android:id="@+id/score_breakdown_management_heading"
+                style="@style/textRatingBreakdown"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -234,6 +242,7 @@
 
             <TextView
                 android:id="@+id/score_breakdown_management"
+                style="@style/textRatingBreakdown"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -250,10 +259,10 @@
                 android:id="@+id/buton_info_dialog"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/information_icon_description"
                 Tools:layout_constraintEnd_toEndOf="parent"
                 Tools:layout_constraintTop_toBottomOf="@+id/score_breakdown_management"
-                Tools:srcCompat="@drawable/ic_info_outline_black_24dp"
-                android:contentDescription="@string/information_icon_description" />
+                Tools:srcCompat="@drawable/ic_info_outline_black_24dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
