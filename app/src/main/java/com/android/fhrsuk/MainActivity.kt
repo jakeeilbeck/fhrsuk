@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.android.fhrsuk.adapters.ViewPagerAdapter
 import com.android.fhrsuk.databinding.MainActivityBinding
+import com.android.fhrsuk.nearbyList.FragmentVisibleListener
 import com.android.fhrsuk.nearbyList.NearbyFragment
 import com.android.fhrsuk.search.SearchFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -15,7 +18,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
 private const val ICON_SELECTED_ALPHA: Int = 255
 private const val ICON_UNSELECTED_ALPHA: Int = 137
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), FragmentVisibleListener {
 
     @ExperimentalCoroutinesApi
     @InternalCoroutinesApi
@@ -70,6 +73,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //FragmentVisibleListener implementation
+    override fun onAttachFragment(fragment: Fragment) {
+        if (fragment is NearbyFragment){
+            fragment.fragmentVisibleListener = this
+        }
+    }
+
+    override fun onFragmentVisible() {
+        hideProgressBar()
+    }
+
+    private fun hideProgressBar(){
+        binding.progressBar.isVisible = false
+    }
+
     //options menu used for navigation between fragments in addition to swiping
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_switch_fragment, menu)
@@ -94,6 +112,8 @@ class MainActivity : AppCompatActivity() {
                     1 -> {
                         listIcon.icon.alpha = ICON_UNSELECTED_ALPHA
                         searchIcon.icon.alpha = ICON_SELECTED_ALPHA
+                        //Hide progressBar if user switches to Search before Nearby List has loaded
+                        hideProgressBar()
                     }
                 }
             }

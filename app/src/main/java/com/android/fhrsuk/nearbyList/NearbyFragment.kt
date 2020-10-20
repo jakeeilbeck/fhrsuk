@@ -37,6 +37,12 @@ import kotlinx.coroutines.launch
 private const val PERMISSIONS_REQUEST_CODE = 11
 private const val TAG = "NearbyFragment"
 
+//Interface to communicate Fragment visibility to Activity. Used to tell Activity to hide it's
+//ProgressBar once fragment loads
+interface FragmentVisibleListener {
+    fun onFragmentVisible()
+}
+
 class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
 
     private lateinit var recyclerView: RecyclerView
@@ -49,6 +55,8 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
     private var firstCall: Boolean = true
 
     private lateinit var location: Location
+
+    var fragmentVisibleListener: FragmentVisibleListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -164,7 +172,9 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
                 adapter.submitData(it)
             }
         }
-
+        //Trigger Activity to hide ProgressBar
+        fragmentVisibleListener?.onFragmentVisible()
+        //Hide SwipeRefresh ProgressBar
         swipeRefresh.isRefreshing = false
     }
 
