@@ -17,12 +17,14 @@
 
     <color name="textRatingBreakdown">#AFB3BF</color>
 
-    <color name="rating5">#2ecc71</color>
-    <color name="rating4">#CDDC39</color>
+    <color name="filterClearBg">#B6B9C4</color>
+
+    <color name="rating5">#43a047</color>
+    <color name="rating4">#90C103</color>
     <color name="rating3">#f1c40f</color>
-    <color name="rating2">#d35400</color>
-    <color name="rating1">#e74c3c</color>
-    <color name="rating0">#c0392b</color>
+    <color name="rating2">#FF6E40</color>
+    <color name="rating1">#c0392b</color>
+    <color name="rating0">#6E2F23</color>
     <color name="ratingNa">#2c3e50</color>
 
 </resources>

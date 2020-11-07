@@ -15,8 +15,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/swipe_refresh"/>
+        app:layout_constraintTop_toTopOf="@+id/swipe_refresh" />
 
     <ProgressBar
         android:id="@+id/progressbar_list"
@@ -55,7 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -64,14 +63,101 @@
         style="@style/fabTheme"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:clickable="true"
-        android:focusable="true"
+        android:contentDescription="@string/fab_up_description"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/fab_filter"
+        app:srcCompat="@drawable/ic_expand_less_white_24dp" />
+
+    <TextView
+        android:id="@+id/filter_rating5"
+        style="@style/filtersTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/filters_bg"
+        android:backgroundTint="@color/rating5"
+        android:text="@string/rating_5"
+        app:layout_constraintBottom_toTopOf="@+id/filter_rating1"
+        app:layout_constraintEnd_toStartOf="@+id/filter_rating2"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/filter_rating4"
+        style="@style/filtersTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/filters_bg"
+        android:backgroundTint="@color/rating4"
+        android:text="@string/rating_4"
+        app:layout_constraintBottom_toTopOf="@+id/filter_rating0"
+        app:layout_constraintEnd_toStartOf="@+id/filter_rating1"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/filter_rating3"
+        style="@style/filtersTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/filters_bg"
+        android:backgroundTint="@color/rating3"
+        android:text="@string/rating_3"
+        app:layout_constraintBottom_toTopOf="@+id/filter_clear"
+        app:layout_constraintEnd_toStartOf="@+id/filter_rating0"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/filter_rating2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/filtersTheme"
+        android:background="@drawable/filters_bg"
+        android:backgroundTint="@color/rating2"
+        android:text="@string/rating_2"
+        app:layout_constraintBottom_toTopOf="@+id/filter_rating1"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible"/>
+
+    <TextView
+        android:id="@+id/filter_rating1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/filtersTheme"
+        android:background="@drawable/filters_bg"
+        android:backgroundTint="@color/rating1"
+        android:text="@string/rating_1"
+        app:layout_constraintBottom_toTopOf="@+id/filter_rating0"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible"/>
+
+    <TextView
+        android:id="@+id/filter_rating0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/filtersTheme"
+        android:background="@drawable/filters_bg"
+        android:backgroundTint="@color/rating0"
+        android:text="@string/rating_0"
+        app:layout_constraintBottom_toTopOf="@+id/filter_clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible"/>
+
+    <TextView
+        android:id="@+id/filter_clear"
+        style="@style/filtersTheme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/filters_clear_bg"
+        app:layout_constraintBottom_toTopOf="@+id/fab_filter"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_filter"
+        style="@style/fabTheme"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:contentDescription="@string/fab_filter_description"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_expand_less_white_24dp"
-        android:contentDescription="@string/fab_description"/>
-
+        app:srcCompat="@drawable/ic_baseline_filter_alt_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

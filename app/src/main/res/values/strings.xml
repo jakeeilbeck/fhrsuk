@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">FHRSUK</string>
 
+    <string name="rating_5">5</string>
+    <string name="rating_4">4</string>
+    <string name="rating_3">3</string>
+    <string name="rating_2">2</string>
+    <string name="rating_1">1</string>
+    <string name="rating_0">0</string>
     <string name="rating_exempt">Exempt</string>
     <string name="rating_awaiting_publication">Awaiting Publication</string>
     <string name="rating_awaiting_inspection">Awaiting Inspection</string>
@@ -39,6 +45,14 @@
     <string name="management_breakdown_info">System or checks in place to ensure that food sold or served is safe to eat, evidence that staff know about food safety, and the food safety officer has confidence that standards will be maintained in the future</string>
     <string name="information_icon_description">Information icon</string>
 
-    <string name="fab_description">FAB: Scroll to top of page</string>
+    <string name="fab_up_description">FAB: Scroll to top of page</string>
+    <string name="fab_filter_description">FAB: Filter results</string>
+    <string name="fab_filter0_description">FAB: Filter results to 0 ratings</string>
+    <string name="fab_filter1_description">FAB: Filter results to 1 ratings</string>
+    <string name="fab_filter2_description">FAB: Filter results to 2 ratings</string>
+    <string name="fab_filter3_description">FAB: Filter results to 3 ratings</string>
+    <string name="fab_filter4_description">FAB: Filter results to 4 ratings</string>
+    <string name="fab_filter5_description">FAB: Filter results to 5 ratings</string>
+    <string name="fab_filter_clear_description">FAB: Clear filter</string>
 
 </resources>

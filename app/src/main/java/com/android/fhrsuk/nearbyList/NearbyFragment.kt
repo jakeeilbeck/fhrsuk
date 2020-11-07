@@ -9,6 +9,8 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -90,6 +92,14 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
         nearbyBinding = binding
         swipeRefresh = binding.swipeRefresh
         val fabUp: FloatingActionButton = binding.fabUp
+        val fabFilter: FloatingActionButton = binding.fabFilter
+        val filterClear = binding.filterClear
+        val filter0 = binding.filterRating0
+        val filter1 = binding.filterRating1
+        val filter2 = binding.filterRating2
+        val filter3 = binding.filterRating3
+        val filter4 = binding.filterRating4
+        val filter5 = binding.filterRating5
 
         //fabUp will only be visible after the user has started scrolling
         fabUp.hide()
@@ -102,7 +112,7 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
         //stops 'blinking' effect when item is clicked
         recyclerView.itemAnimator?.changeDuration = 0
 
-        // Show/hide the fab button after scrolled passed ~1 page of results
+        // Show/hide the fabUp button after scrolled passed ~1 page of results
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -117,24 +127,135 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
         //scroll to top of list on click
         fabUp.setOnClickListener { lifecycleScope.launch { recyclerView.scrollToPosition(0) } }
 
+        //Fade animations for filter options
+        val animFadeIn: Animation = AnimationUtils.loadAnimation(this.context, android.R.anim.fade_in)
+        animFadeIn.duration = 350
+        val animFadeOut: Animation = AnimationUtils.loadAnimation(this.context, android.R.anim.fade_out)
+        animFadeOut.duration = 100
+
+        //Show/Hide filter options and apply fade animation
+        var expandedState = false
+        fabFilter.setOnClickListener {
+            if (expandedState) {
+                filterClear.isVisible = false
+                filterClear.startAnimation(animFadeOut)
+                filter0.isVisible = false
+                filter0.startAnimation(animFadeOut)
+                filter1.isVisible = false
+                filter1.startAnimation(animFadeOut)
+                filter2.isVisible = false
+                filter2.startAnimation(animFadeOut)
+                filter3.isVisible = false
+                filter3.startAnimation(animFadeOut)
+                filter4.isVisible = false
+                filter4.startAnimation(animFadeOut)
+                filter5.isVisible = false
+                filter5.startAnimation(animFadeOut)
+                expandedState = false
+            } else {
+                filterClear.isVisible = true
+                filterClear.startAnimation(animFadeIn)
+                filter0.isVisible = true
+                filter0.startAnimation(animFadeIn)
+                filter1.isVisible = true
+                filter1.startAnimation(animFadeIn)
+                filter2.isVisible = true
+                filter2.startAnimation(animFadeIn)
+                filter3.isVisible = true
+                filter3.startAnimation(animFadeIn)
+                filter4.isVisible = true
+                filter4.startAnimation(animFadeIn)
+                filter5.isVisible = true
+                filter5.startAnimation(animFadeIn)
+                expandedState = true
+            }
+        }
+
+        filterClear.setOnClickListener {
+            lifecycleScope.launch {
+                nearbyViewModel.filterList("clear")?.collect {
+                    adapter.submitData(it)
+                }
+            }
+            scrollToTop(binding)
+        }
+
+        filter0.setOnClickListener {
+            lifecycleScope.launch {
+                nearbyViewModel.filterList("0")?.collect {
+                    adapter.submitData(it)
+                }
+            }
+            scrollToTop(binding)
+        }
+
+        filter1.setOnClickListener {
+            lifecycleScope.launch {
+                nearbyViewModel.filterList("1")?.collect {
+                    adapter.submitData(it)
+                }
+            }
+            scrollToTop(binding)
+        }
+
+        filter2.setOnClickListener {
+            lifecycleScope.launch {
+                nearbyViewModel.filterList("2")?.collect {
+                    adapter.submitData(it)
+                }
+            }
+            scrollToTop(binding)
+        }
+
+        filter3.setOnClickListener {
+            lifecycleScope.launch {
+                nearbyViewModel.filterList("3")?.collect {
+                    adapter.submitData(it)
+                }
+            }
+            scrollToTop(binding)
+        }
+
+        filter4.setOnClickListener {
+            lifecycleScope.launch {
+                nearbyViewModel.filterList("4")?.collect {
+                    adapter.submitData(it)
+                }
+            }
+            scrollToTop(binding)
+        }
+
+        filter5.setOnClickListener {
+            lifecycleScope.launch {
+                nearbyViewModel.filterList("5")?.collect {
+                    adapter.submitData(it)
+                }
+            }
+            scrollToTop(binding)
+        }
+
         swipeRefresh.setOnRefreshListener {
             //Update ViewModel with latest location then search
             nearbyViewModel.setLocation(location)
             getEstablishments()
         }
 
+        scrollToTop(binding)
+
+        nearbyBinding?.retryButton?.setOnClickListener { adapter.retry() }
+    }
+
+    private fun scrollToTop(binding: FragmentNearbyListBinding) {
         //https://git.io/JUsKp
-        //Scroll to top of list on refresh
+        //Scroll to the top of the list
         lifecycleScope.launch {
             adapter.loadStateFlow
                 // Only emit when REFRESH LoadState for RemoteMediator changes.
                 .distinctUntilChangedBy { it.refresh }
                 // Only react to cases where Remote REFRESH completes i.e., NotLoading.
                 .filter { it.refresh is LoadState.NotLoading }
-                .collect{binding.listRecyclerView.scrollToPosition(0)}
+                .collect { binding.listRecyclerView.scrollToPosition(0) }
         }
-
-        nearbyBinding?.retryButton?.setOnClickListener { adapter.retry() }
     }
 
     private fun initAdapter() {
@@ -153,16 +274,16 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
             // Show the retry button if initial load or refresh fails.
             nearbyBinding?.retryButton?.isVisible = loadState.source.refresh is LoadState.Error
             // Show message if no results
-            if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && adapter.itemCount <1){
+            if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && adapter.itemCount < 1) {
                 recyclerView.isVisible = false
                 no_results_text.isVisible = true
-            }else{
+            } else {
                 no_results_text.isVisible = false
             }
         }
     }
 
-    //Called initially and on each swipeRefresh
+    //Called initially after first location load and then on each swipeRefresh
     private fun getEstablishments() {
 
         //Cancels previous job then create a new one to get data
