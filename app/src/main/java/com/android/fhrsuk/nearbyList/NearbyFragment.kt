@@ -236,8 +236,10 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
 
         swipeRefresh.setOnRefreshListener {
             //Update ViewModel with latest location then search
-            nearbyViewModel.setLocation(location)
-            getEstablishments()
+            if (this::location.isInitialized){
+                nearbyViewModel.setLocation(location)
+                getEstablishments()
+            }
         }
 
         scrollToTop(binding)
