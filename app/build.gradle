@@ -60,7 +60,7 @@ dependencies {
     implementation "androidx.paging:paging-runtime:3.0.0-alpha07"
 
     //recyclerView
-    implementation "androidx.recyclerview:recyclerview:1.1.0"
+    implementation "androidx.recyclerview:recyclerview:1.2.0-beta01"
 
     //cardView
     implementation "androidx.cardview:cardview:1.0.0"

@@ -34,4 +34,8 @@ class SearchViewModel(private val repository: SearchRepository) : ViewModel() {
         this.name = name
         this.location = location
     }
+
+    fun getCurrentSearchResult(): Flow<PagingData<Establishments>>?{
+        return currentSearchResult
+    }
 }

@@ -27,9 +27,7 @@ class MainActivity : AppCompatActivity(), FragmentVisibleListener {
 
     private lateinit var searchIcon: MenuItem
     private lateinit var listIcon: MenuItem
-
     private lateinit var viewPager2: ViewPager2
-
     private lateinit var binding: MainActivityBinding
 
     @ExperimentalCoroutinesApi
@@ -39,8 +37,6 @@ class MainActivity : AppCompatActivity(), FragmentVisibleListener {
 
         binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        if (savedInstanceState == null) {
 
             viewPager2 = binding.viewPager
             val pagerAdapter = ViewPagerAdapter(
@@ -52,25 +48,6 @@ class MainActivity : AppCompatActivity(), FragmentVisibleListener {
             pagerAdapter.addFragment(searchFragment)
 
             viewPager2.adapter = pagerAdapter
-
-        } else {
-            //Prevent viewPager2 causing crashes after process death in onPrepareOptionsMenu
-            //by ensuring that an instance exists
-            if (!this::viewPager2.isInitialized) {
-                viewPager2 = binding.viewPager
-                val pagerAdapter = ViewPagerAdapter(
-                    supportFragmentManager,
-                    lifecycle
-                )
-
-                pagerAdapter.addFragment(nearbyFragment)
-                pagerAdapter.addFragment(searchFragment)
-
-                viewPager2.adapter = pagerAdapter
-            }
-
-            return
-        }
     }
 
     //FragmentVisibleListener implementation

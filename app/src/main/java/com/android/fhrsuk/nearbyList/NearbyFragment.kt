@@ -54,7 +54,6 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
     private lateinit var locationServices: LocationServices
     private var searchJob: Job? = null
     private var nearbyBinding: FragmentNearbyListBinding? = null
-    private var firstCall: Boolean = true
 
     private lateinit var location: Location
 
@@ -65,24 +64,6 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
 
         nearbyViewModel = ViewModelProvider(this, Injection.provideNearbyViewModelFactory())
             .get(NearbyViewModel::class.java)
-
-        //Observer for location updates
-        val locationObserver = Observer<Location> { newLocation ->
-
-            location = newLocation
-
-            //Only the initial request of the session should be triggered by a location update
-            //Subsequent updates triggered by Swipe Refresh
-            if (firstCall) {
-                nearbyViewModel.setLocation(newLocation)
-                getEstablishments()
-                firstCall = false
-            }
-        }
-
-        //Initialise location updates and observe latest results
-        locationServices = LocationServices(this.requireActivity())
-        locationServices.location.observe(this, locationObserver)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,26 +71,50 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
 
         val binding = FragmentNearbyListBinding.bind(view)
         nearbyBinding = binding
+
         swipeRefresh = binding.swipeRefresh
         val fabUp: FloatingActionButton = binding.fabUp
         val fabFilter: FloatingActionButton = binding.fabFilter
-        val filterClear = binding.filterClear
-        val filter0 = binding.filterRating0
-        val filter1 = binding.filterRating1
-        val filter2 = binding.filterRating2
-        val filter3 = binding.filterRating3
-        val filter4 = binding.filterRating4
-        val filter5 = binding.filterRating5
+        val filterClear = nearbyBinding?.filterClear
+        val filter0 = nearbyBinding?.filterRating0
+        val filter1 = nearbyBinding?.filterRating1
+        val filter2 = nearbyBinding?.filterRating2
+        val filter3 = nearbyBinding?.filterRating3
+        val filter4 = nearbyBinding?.filterRating4
+        val filter5 = nearbyBinding?.filterRating5
+
+        adapter = RecyclerViewAdapter(requireContext())
 
         //fabUp will only be visible after the user has started scrolling
         fabUp.hide()
 
-        adapter = RecyclerViewAdapter(requireContext())
+        //Observer for location updates
+        val locationObserver = Observer<Location> { newLocation ->
+            location = newLocation
+
+            //Only the initial request of the session should be triggered by a location update
+            //Subsequent updates triggered by swipeRefresh
+            if (nearbyViewModel.getIsFirstSearch()) {
+
+                nearbyViewModel.setLocation(newLocation)
+                getEstablishments(true)
+
+                nearbyViewModel.setIsFirstSearchFalse()
+            }
+        }
+
+        //Get the existing list of establishments after configuration change
+        if (!nearbyViewModel.getIsFirstSearch()) {
+            getEstablishments(false)
+        }
+
+        //Initialise location updates and observe latest results
+        locationServices = LocationServices(this.requireContext())
+        locationServices.location.observe(this.viewLifecycleOwner, locationObserver)
 
         recyclerView = binding.listRecyclerView
-        initAdapter()
 
-        //stops 'blinking' effect when item is clicked
+        //stops 'blinking' effect when an item is clicked
         recyclerView.itemAnimator?.changeDuration = 0
 
         // Show/hide the fabUp button after scrolled passed ~1 page of results
@@ -124,130 +129,130 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
             }
         })
 
-        //scroll to top of list on click
-        fabUp.setOnClickListener { lifecycleScope.launch { recyclerView.scrollToPosition(0) } }
+        //Display filter options if they were previously expanded, and don't update the visibility status
+        showHideFilters(false)
 
-        //Fade animations for filter options
-        val animFadeIn: Animation = AnimationUtils.loadAnimation(this.context, android.R.anim.fade_in)
-        animFadeIn.duration = 350
-        val animFadeOut: Animation = AnimationUtils.loadAnimation(this.context, android.R.anim.fade_out)
-        animFadeOut.duration = 100
+        fabUp.setOnClickListener {
+            scrollToTop()
+        }
 
-        //Show/Hide filter options and apply fade animation
-        var expandedState = false
+        //Show/Hide filter options
         fabFilter.setOnClickListener {
-            if (expandedState) {
-                filterClear.isVisible = false
-                filterClear.startAnimation(animFadeOut)
-                filter0.isVisible = false
-                filter0.startAnimation(animFadeOut)
-                filter1.isVisible = false
-                filter1.startAnimation(animFadeOut)
-                filter2.isVisible = false
-                filter2.startAnimation(animFadeOut)
-                filter3.isVisible = false
-                filter3.startAnimation(animFadeOut)
-                filter4.isVisible = false
-                filter4.startAnimation(animFadeOut)
-                filter5.isVisible = false
-                filter5.startAnimation(animFadeOut)
-                expandedState = false
-            } else {
-                filterClear.isVisible = true
-                filterClear.startAnimation(animFadeIn)
-                filter0.isVisible = true
-                filter0.startAnimation(animFadeIn)
-                filter1.isVisible = true
-                filter1.startAnimation(animFadeIn)
-                filter2.isVisible = true
-                filter2.startAnimation(animFadeIn)
-                filter3.isVisible = true
-                filter3.startAnimation(animFadeIn)
-                filter4.isVisible = true
-                filter4.startAnimation(animFadeIn)
-                filter5.isVisible = true
-                filter5.startAnimation(animFadeIn)
-                expandedState = true
-            }
+            //Show/hide filter options and update the filter status
+            showHideFilters(true)
         }
 
-        filterClear.setOnClickListener {
-            lifecycleScope.launch {
-                nearbyViewModel.filterList("clear")?.collect {
-                    adapter.submitData(it)
-                }
-            }
-            scrollToTop(binding)
+        //Click listeners for each filter option
+        filterClear?.setOnClickListener {
+            filterList("clear")
         }
 
-        filter0.setOnClickListener {
-            lifecycleScope.launch {
-                nearbyViewModel.filterList("0")?.collect {
-                    adapter.submitData(it)
-                }
-            }
-            scrollToTop(binding)
+        filter0?.setOnClickListener {
+            filterList("0")
         }
 
-        filter1.setOnClickListener {
-            lifecycleScope.launch {
-                nearbyViewModel.filterList("1")?.collect {
-                    adapter.submitData(it)
-                }
-            }
-            scrollToTop(binding)
+        filter1?.setOnClickListener {
+            filterList("1")
         }
 
-        filter2.setOnClickListener {
-            lifecycleScope.launch {
-                nearbyViewModel.filterList("2")?.collect {
-                    adapter.submitData(it)
-                }
-            }
-            scrollToTop(binding)
+        filter2?.setOnClickListener {
+            filterList("2")
         }
 
-        filter3.setOnClickListener {
-            lifecycleScope.launch {
-                nearbyViewModel.filterList("3")?.collect {
-                    adapter.submitData(it)
-                }
-            }
-            scrollToTop(binding)
+        filter3?.setOnClickListener {
+            filterList("3")
         }
 
-        filter4.setOnClickListener {
-            lifecycleScope.launch {
-                nearbyViewModel.filterList("4")?.collect {
-                    adapter.submitData(it)
-                }
-            }
-            scrollToTop(binding)
+        filter4?.setOnClickListener {
+            filterList("4")
         }
 
-        filter5.setOnClickListener {
-            lifecycleScope.launch {
-                nearbyViewModel.filterList("5")?.collect {
-                    adapter.submitData(it)
-                }
-            }
-            scrollToTop(binding)
+        filter5?.setOnClickListener {
+            filterList("5")
         }
 
         swipeRefresh.setOnRefreshListener {
             //Update ViewModel with latest location then search
-            if (this::location.isInitialized){
+            if (this::location.isInitialized) {
                 nearbyViewModel.setLocation(location)
-                getEstablishments()
+                getEstablishments(true)
             }
+            scrollToTop()
         }
-
-        scrollToTop(binding)
 
         nearbyBinding?.retryButton?.setOnClickListener { adapter.retry() }
     }
 
-    private fun scrollToTop(binding: FragmentNearbyListBinding) {
+    //Show/Hide filter options, apply fade animation, and update the filter status when parameter is true.
+    private fun showHideFilters(updateFilterStatus: Boolean){
+        when(updateFilterStatus){
+            //Update the filter visibility and store the visibility state so we can keep it the same
+            //after configuration changes
+            true -> if (nearbyViewModel.getFilterVisibilityStatus()) {
+                        hideFilterOptions()
+                        nearbyViewModel.setFilterVisibilityStatus(false)
+                    } else {
+                        showFilterOptions()
+                        nearbyViewModel.setFilterVisibilityStatus(true)
+                    }
+            //We do not update the filter status when we show/hide after configuration changes.
+            false -> if (!nearbyViewModel.getFilterVisibilityStatus()) {
+                        hideFilterOptions()
+                    } else {
+                        showFilterOptions()
+                    }
+        }
+    }
+
+    private fun showFilterOptions(){
+        val animFadeIn: Animation = AnimationUtils.loadAnimation(this.context, android.R.anim.fade_in)
+        animFadeIn.duration = 350
+
+        nearbyBinding?.filterClear?.isVisible = true
+        nearbyBinding?.filterClear?.startAnimation(animFadeIn)
+        nearbyBinding?.filter0?.isVisible = true
+        nearbyBinding?.filter0?.startAnimation(animFadeIn)
+        nearbyBinding?.filterRating1?.isVisible = true
+        nearbyBinding?.filterRating1?.startAnimation(animFadeIn)
+        nearbyBinding?.filterRating2?.isVisible = true
+        nearbyBinding?.filterRating2?.startAnimation(animFadeIn)
+        nearbyBinding?.filterRating3?.isVisible = true
+        nearbyBinding?.filterRating3?.startAnimation(animFadeIn)
+        nearbyBinding?.filterRating4?.isVisible = true
+        nearbyBinding?.filterRating4?.startAnimation(animFadeIn)
+        nearbyBinding?.filterRating5?.isVisible = true
+        nearbyBinding?.filterRating5?.startAnimation(animFadeIn)
+    }
+
+    private fun hideFilterOptions(){
+        val animFadeOut: Animation = AnimationUtils.loadAnimation(this.context, android.R.anim.fade_out)
+        animFadeOut.duration = 100
+
+        nearbyBinding?.filterClear?.isVisible = false
+        nearbyBinding?.filterClear?.startAnimation(animFadeOut)
+        nearbyBinding?.filter0?.isVisible = false
+        nearbyBinding?.filter0?.startAnimation(animFadeOut)
+        nearbyBinding?.filterRating1?.isVisible = false
+        nearbyBinding?.filterRating1?.startAnimation(animFadeOut)
+        nearbyBinding?.filterRating2?.isVisible = false
+        nearbyBinding?.filterRating2?.startAnimation(animFadeOut)
+        nearbyBinding?.filterRating3?.isVisible = false
+        nearbyBinding?.filterRating3?.startAnimation(animFadeOut)
+        nearbyBinding?.filterRating4?.isVisible = false
+        nearbyBinding?.filterRating4?.startAnimation(animFadeOut)
+        nearbyBinding?.filterRating5?.isVisible = false
+        nearbyBinding?.filterRating5?.startAnimation(animFadeOut)
+    }
+
+    private fun filterList(filter: String) {
+        lifecycleScope.launch {
+            nearbyViewModel.filterList(filter)?.collect {
+                adapter.submitData(it)
+            }
+        }
+    }
+
+    private fun scrollToTop() {
         //https://git.io/JUsKp
         //Scroll to the top of the list
         lifecycleScope.launch {
@@ -256,8 +261,41 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
                 .distinctUntilChangedBy { it.refresh }
                 // Only react to cases where Remote REFRESH completes i.e., NotLoading.
                 .filter { it.refresh is LoadState.NotLoading }
-                .collect { binding.listRecyclerView.scrollToPosition(0) }
+                .collect { nearbyBinding?.listRecyclerView?.scrollToPosition(0) }
         }
+    }
+
+    //Called initially after first location load and then on each swipeRefresh
+    private fun getEstablishments(getNewData: Boolean) {
+        if (getNewData) {
+            //Cancels previous job then create a new one to get data
+            searchJob?.cancel()
+            searchJob = lifecycleScope.launch {
+                nearbyViewModel.searchEstablishments().collectLatest {
+                    adapter.submitData(it)
+                }
+            }
+            //Hide SwipeRefresh ProgressBar
+            swipeRefresh.isRefreshing = false
+
+        } else {
+            //Configuration change, so fetch current data
+            lifecycleScope.launch {
+                nearbyViewModel.getCurrentSearchResult()?.collectLatest {
+                    adapter.submitData(it)
+                }
+            }
+            //Filter the list if one was previously applied
+            if (nearbyViewModel.getCurrentFilter() != "clear") {
+                filterList(nearbyViewModel.getCurrentFilter())
+            }
+            //Hide SwipeRefresh ProgressBar
+            swipeRefresh.isRefreshing = false
+        }
+
+        //Trigger Activity to hide ProgressBar
+        fragmentVisibleListener?.onFragmentVisible()
+        initAdapter()
     }
 
     private fun initAdapter() {
@@ -270,9 +308,11 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
         //show / hide the header or footer views based on loading state
         adapter.addLoadStateListener { loadState ->
             // Only show the list if refresh succeeds.
-            nearbyBinding?.listRecyclerView?.isVisible = loadState.source.refresh is LoadState.NotLoading
+            nearbyBinding?.listRecyclerView?.isVisible =
+                loadState.source.refresh is LoadState.NotLoading
             // Show progress bar during initial load or refresh.
-            nearbyBinding?.progressbarList?.isVisible = loadState.source.refresh is LoadState.Loading
+            nearbyBinding?.progressbarList?.isVisible =
+                loadState.source.refresh is LoadState.Loading
             // Show the retry button if initial load or refresh fails.
             nearbyBinding?.retryButton?.isVisible = loadState.source.refresh is LoadState.Error
             // Show message if no results
@@ -283,22 +323,6 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
                 no_results_text.isVisible = false
             }
         }
-    }
-
-    //Called initially after first location load and then on each swipeRefresh
-    private fun getEstablishments() {
-
-        //Cancels previous job then create a new one to get data
-        searchJob?.cancel()
-        searchJob = lifecycleScope.launch {
-            nearbyViewModel.searchEstablishments().collectLatest {
-                adapter.submitData(it)
-            }
-        }
-        //Trigger Activity to hide ProgressBar
-        fragmentVisibleListener?.onFragmentVisible()
-        //Hide SwipeRefresh ProgressBar
-        swipeRefresh.isRefreshing = false
     }
 
     override fun onStart() {

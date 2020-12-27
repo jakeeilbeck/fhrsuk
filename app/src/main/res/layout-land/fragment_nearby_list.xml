@@ -76,8 +76,8 @@
         android:background="@drawable/filters_bg"
         android:backgroundTint="@color/rating5"
         android:text="@string/rating_5"
-        app:layout_constraintBottom_toTopOf="@+id/filter_rating4"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/filter_rating1"
+        app:layout_constraintEnd_toStartOf="@+id/filter_rating2"
         tools:visibility="visible" />
 
     <TextView
@@ -88,8 +88,8 @@
         android:background="@drawable/filters_bg"
         android:backgroundTint="@color/rating4"
         android:text="@string/rating_4"
-        app:layout_constraintBottom_toTopOf="@+id/filter_rating3"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/filter0"
+        app:layout_constraintEnd_toStartOf="@+id/filter_rating1"
         tools:visibility="visible" />
 
     <TextView
@@ -100,8 +100,8 @@
         android:background="@drawable/filters_bg"
         android:backgroundTint="@color/rating3"
         android:text="@string/rating_3"
-        app:layout_constraintBottom_toTopOf="@+id/filter_rating2"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/filter_clear"
+        app:layout_constraintEnd_toStartOf="@+id/filter0"
         tools:visibility="visible" />
 
     <TextView
@@ -124,12 +124,12 @@
         android:background="@drawable/filters_bg"
         android:backgroundTint="@color/rating1"
         android:text="@string/rating_1"
-        app:layout_constraintBottom_toTopOf="@+id/filter_rating0"
+        app:layout_constraintBottom_toTopOf="@+id/filter0"
         app:layout_constraintEnd_toEndOf="parent"
         tools:visibility="visible"/>
 
     <TextView
-        android:id="@+id/filter_rating0"
+        android:id="@+id/filter0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/filtersTheme"

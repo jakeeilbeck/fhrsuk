@@ -19,6 +19,11 @@ class NearbyViewModel(private val repository: NearbyRepository) : ViewModel() {
     private var currentQueryValue: String? = null
 
     private var currentSearchResult: Flow<PagingData<Establishments>>? = null
+    private var currentFilter: String = "clear"
+
+    private var isFirstSearch: Boolean = true
+
+    private var filterExpanded: Boolean = false
 
     fun searchEstablishments(): Flow<PagingData<Establishments>> {
         val lastResult = currentSearchResult
@@ -33,12 +38,17 @@ class NearbyViewModel(private val repository: NearbyRepository) : ViewModel() {
         return newResult
     }
 
+    fun getCurrentSearchResult(): Flow<PagingData<Establishments>>? {
+        return currentSearchResult
+    }
+
     fun setLocation(location: Location) {
         this.longitude = location.longitude.toString()
         this.latitude = location.latitude.toString()
     }
 
     fun filterList(rating: String): Flow<PagingData<Establishments>>? {
+        currentFilter = rating
         return if (rating == "clear") {
             currentSearchResult
         } else {
@@ -48,5 +58,25 @@ class NearbyViewModel(private val repository: NearbyRepository) : ViewModel() {
                 }
             }
         }
+    }
+
+    fun getIsFirstSearch(): Boolean {
+        return isFirstSearch
+    }
+
+    fun setIsFirstSearchFalse() {
+        isFirstSearch = false
+    }
+
+    fun getCurrentFilter(): String {
+        return currentFilter
+    }
+
+    fun getFilterVisibilityStatus(): Boolean{
+        return filterExpanded
+    }
+
+    fun setFilterVisibilityStatus(status: Boolean){
+        filterExpanded = status
     }
 }
