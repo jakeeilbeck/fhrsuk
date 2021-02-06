@@ -210,8 +210,8 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
 
         nearbyBinding?.filterClear?.isVisible = true
         nearbyBinding?.filterClear?.startAnimation(animFadeIn)
-        nearbyBinding?.filter0?.isVisible = true
-        nearbyBinding?.filter0?.startAnimation(animFadeIn)
+        nearbyBinding?.filterRating0?.isVisible = true
+        nearbyBinding?.filterRating0?.startAnimation(animFadeIn)
         nearbyBinding?.filterRating1?.isVisible = true
         nearbyBinding?.filterRating1?.startAnimation(animFadeIn)
         nearbyBinding?.filterRating2?.isVisible = true
@@ -230,8 +230,8 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
 
         nearbyBinding?.filterClear?.isVisible = false
         nearbyBinding?.filterClear?.startAnimation(animFadeOut)
-        nearbyBinding?.filter0?.isVisible = false
-        nearbyBinding?.filter0?.startAnimation(animFadeOut)
+        nearbyBinding?.filterRating0?.isVisible = false
+        nearbyBinding?.filterRating0?.startAnimation(animFadeOut)
         nearbyBinding?.filterRating1?.isVisible = false
         nearbyBinding?.filterRating1?.startAnimation(animFadeOut)
         nearbyBinding?.filterRating2?.isVisible = false
