@@ -4,11 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.android.fhrsuk.favourites.FavouritesDao
+import com.android.fhrsuk.favourites.FavouritesTable
 import com.android.fhrsuk.models.Establishments
 import com.android.fhrsuk.search.data.SearchRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
-class SearchViewModel(private val repository: SearchRepository) : ViewModel() {
+class SearchViewModel(private val repository: SearchRepository,
+                      private val favouritesDatabase: FavouritesDao) : ViewModel() {
 
     private lateinit var name: String
     private lateinit var location: String
@@ -37,5 +41,32 @@ class SearchViewModel(private val repository: SearchRepository) : ViewModel() {
 
     fun getCurrentSearchResult(): Flow<PagingData<Establishments>>?{
         return currentSearchResult
+    }
+
+    fun addRemoveFromFavourites(favourite: Establishments?){
+        viewModelScope.launch {
+            val newFavourite = FavouritesTable(
+                favourite?.fHRSID,
+                favourite?.businessName,
+                favourite?.businessType,
+                favourite?.addressLine1,
+                favourite?.addressLine2,
+                favourite?.postCode,
+                favourite?.ratingValue,
+                favourite?.ratingDate,
+                favourite?.scores?.hygiene,
+                favourite?.scores?.structural,
+                favourite?.scores?.confidenceInManagement,
+                System.currentTimeMillis())
+            addRemove(newFavourite)
+        }
+    }
+
+    private suspend fun addRemove(favourite: FavouritesTable){
+        if(favouritesDatabase.checkExists(favourite.fHRSID) == 0){
+            favouritesDatabase.insert(favourite)
+        }else{
+            favouritesDatabase.delete(favourite)
+        }
     }
 }

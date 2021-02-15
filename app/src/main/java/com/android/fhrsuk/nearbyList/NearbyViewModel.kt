@@ -6,12 +6,16 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
+import com.android.fhrsuk.favourites.FavouritesDao
+import com.android.fhrsuk.favourites.FavouritesTable
 import com.android.fhrsuk.models.Establishments
 import com.android.fhrsuk.nearbyList.data.NearbyRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
-class NearbyViewModel(private val repository: NearbyRepository) : ViewModel() {
+class NearbyViewModel(private val repository: NearbyRepository,
+                      private val favouritesDatabase: FavouritesDao)
+    : ViewModel() {
 
     private lateinit var longitude: String
     private lateinit var latitude: String
@@ -24,6 +28,33 @@ class NearbyViewModel(private val repository: NearbyRepository) : ViewModel() {
     private var isFirstSearch: Boolean = true
 
     private var filterExpanded: Boolean = false
+
+    fun addRemoveFromFavourites(favourite: Establishments?){
+        viewModelScope.launch {
+            val newFavourite = FavouritesTable(
+                favourite?.fHRSID,
+                favourite?.businessName,
+                favourite?.businessType,
+                favourite?.addressLine1,
+                favourite?.addressLine2,
+                favourite?.postCode,
+                favourite?.ratingValue,
+                favourite?.ratingDate,
+                favourite?.scores?.hygiene,
+                favourite?.scores?.structural,
+                favourite?.scores?.confidenceInManagement,
+                System.currentTimeMillis())
+            addRemove(newFavourite)
+        }
+    }
+
+    private suspend fun addRemove(favourite: FavouritesTable){
+        if(favouritesDatabase.checkExists(favourite.fHRSID) == 0){
+            favouritesDatabase.insert(favourite)
+        }else{
+            favouritesDatabase.delete(favourite)
+        }
+    }
 
     fun searchEstablishments(): Flow<PagingData<Establishments>> {
         val lastResult = currentSearchResult

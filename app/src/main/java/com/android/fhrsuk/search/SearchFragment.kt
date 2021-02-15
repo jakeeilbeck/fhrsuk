@@ -2,6 +2,7 @@ package com.android.fhrsuk.search
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -15,6 +16,8 @@ import com.android.fhrsuk.Injection
 import com.android.fhrsuk.R
 import com.android.fhrsuk.adapters.RecyclerViewAdapter
 import com.android.fhrsuk.databinding.FragmentSearchBinding
+import com.android.fhrsuk.favourites.FavouritesDatabase
+import com.android.fhrsuk.models.Establishments
 import com.android.fhrsuk.search.loadingState.SearchLoadStateAdapter
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.Job
@@ -32,7 +35,11 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        searchViewModel = ViewModelProvider(this, Injection.provideSearchViewModelFactory())
+        val application = requireNotNull(this.activity).application
+        val favouritesDataSource = FavouritesDatabase.getInstance(application).favouritesDao
+        val viewModelFactory = Injection.provideSearchViewModelFactory(favouritesDataSource)
+
+        searchViewModel = ViewModelProvider(this, viewModelFactory)
             .get(SearchViewModel::class.java)
     }
 
@@ -50,7 +57,9 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         var searchRestaurantName: String
         var searchLocation: String
 
-        adapter = RecyclerViewAdapter(requireContext())
+        adapter = RecyclerViewAdapter(requireContext()) { establishment: Establishments? ->
+            favouritesOnClick(establishment)
+        }
 
         //fabUp will only be visible after the user has started scrolling
         fabUp?.hide()
@@ -107,6 +116,11 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         fabUp?.setOnClickListener { lifecycleScope.launch { recyclerView.scrollToPosition(0) } }
 
         searchBinding?.retryButton?.setOnClickListener { adapter.retry() }
+    }
+
+    private fun favouritesOnClick(establishment: Establishments?){
+        Log.i("NearbyFragment", "favButton?.setOnClickListener")
+        searchViewModel.addRemoveFromFavourites(establishment)
     }
 
     private fun hideKeyboard(view: View){

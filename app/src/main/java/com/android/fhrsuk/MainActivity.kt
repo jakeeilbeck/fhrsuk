@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.android.fhrsuk.adapters.ViewPagerAdapter
 import com.android.fhrsuk.databinding.MainActivityBinding
+import com.android.fhrsuk.favourites.FavouritesFragment
 import com.android.fhrsuk.nearbyList.FragmentVisibleListener
 import com.android.fhrsuk.nearbyList.NearbyFragment
 import com.android.fhrsuk.search.SearchFragment
@@ -23,7 +24,8 @@ class MainActivity : AppCompatActivity(), FragmentVisibleListener {
     @ExperimentalCoroutinesApi
     @InternalCoroutinesApi
     private val nearbyFragment = NearbyFragment()
-    private val searchFragment = SearchFragment()
+//    private val searchFragment = SearchFragment()
+    private val searchFragment = FavouritesFragment()
 
     private lateinit var searchIcon: MenuItem
     private lateinit var listIcon: MenuItem

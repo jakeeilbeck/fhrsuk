@@ -25,6 +25,8 @@ import com.android.fhrsuk.Injection
 import com.android.fhrsuk.R
 import com.android.fhrsuk.adapters.RecyclerViewAdapter
 import com.android.fhrsuk.databinding.FragmentNearbyListBinding
+import com.android.fhrsuk.favourites.FavouritesDatabase
+import com.android.fhrsuk.models.Establishments
 import com.android.fhrsuk.nearbyList.loadingState.NearbyLoadStateAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -62,7 +64,11 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        nearbyViewModel = ViewModelProvider(this, Injection.provideNearbyViewModelFactory())
+        val application = requireNotNull(this.activity).application
+        val favouritesDataSource = FavouritesDatabase.getInstance(application).favouritesDao
+        val viewModelFactory = Injection.provideNearbyViewModelFactory(favouritesDataSource)
+
+        nearbyViewModel = ViewModelProvider(this, viewModelFactory)
             .get(NearbyViewModel::class.java)
     }
 
@@ -83,7 +89,9 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
         val filter4 = nearbyBinding?.filterRating4
         val filter5 = nearbyBinding?.filterRating5
 
-        adapter = RecyclerViewAdapter(requireContext())
+        adapter = RecyclerViewAdapter(requireContext()) { establishment: Establishments? ->
+            favouritesOnClick(establishment)
+        }
 
         //fabUp will only be visible after the user has started scrolling
         fabUp.hide()
@@ -181,6 +189,11 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
         }
 
         nearbyBinding?.retryButton?.setOnClickListener { adapter.retry() }
+    }
+
+    private fun favouritesOnClick(establishment: Establishments?){
+        Log.i("NearbyFragment", "favButton?.setOnClickListener")
+        nearbyViewModel.addRemoveFromFavourites(establishment)
     }
 
     //Show/Hide filter options, apply fade animation, and update the filter status when parameter is true.
@@ -364,10 +377,10 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
             // Provide an additional rationale to the user if the user denied the
             // request previously, but didn't check the "Don't ask again" checkbox.
             Log.i(TAG, "Displaying permission rationale to provide additional context.")
-            showSnackbar(R.string.permission_rationale, android.R.string.ok, View.OnClickListener {
+            showSnackbar(R.string.permission_rationale, android.R.string.ok) {
                 // Request permission
                 startLocationPermissionRequest()
-            })
+            }
 
         } else {
             // Request permission
@@ -397,16 +410,16 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
 
                 // Permission denied.
                 else -> {
-                    showSnackbar(R.string.permission_denied_explanation, R.string.settings,
-                        View.OnClickListener {
-                            // Build intent that displays the App settings screen.
-                            val intent = Intent().apply {
-                                action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                                data = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
-                                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                            }
-                            startActivity(intent)
-                        })
+                    showSnackbar(R.string.permission_denied_explanation, R.string.settings
+                    ) {
+                        // Build intent that displays the App settings screen.
+                        val intent = Intent().apply {
+                            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                            data = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        }
+                        startActivity(intent)
+                    }
                 }
             }
         }

@@ -1,6 +1,7 @@
 package com.android.fhrsuk.nearbyList.data
 
 import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.android.fhrsuk.models.Establishments
 import com.android.fhrsuk.api.RetrofitService
 import retrofit2.HttpException
@@ -35,5 +36,9 @@ class NearbyPagingSource(
         } catch (exception: HttpException) {
             return LoadResult.Error(exception)
         }
+    }
+
+    override fun getRefreshKey(state: PagingState<Int, Establishments>): Int? {
+        return state.anchorPosition
     }
 }

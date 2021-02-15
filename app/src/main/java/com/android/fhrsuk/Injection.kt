@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.android.fhrsuk.nearbyList.NearbyViewModelFactory
 import com.android.fhrsuk.nearbyList.data.NearbyRepository
 import com.android.fhrsuk.api.RetrofitService
+import com.android.fhrsuk.favourites.FavouritesDao
+import com.android.fhrsuk.favourites.FavouritesViewModelFactory
 import com.android.fhrsuk.search.data.SearchRepository
 import com.android.fhrsuk.search.SearchViewModelFactory
 
@@ -15,15 +17,20 @@ object Injection {
         return NearbyRepository(RetrofitService.create())
     }
 
-    fun provideNearbyViewModelFactory(): ViewModelProvider.Factory {
-        return NearbyViewModelFactory(provideNearbyRepository())
+    fun provideNearbyViewModelFactory(favouritesDao: FavouritesDao): ViewModelProvider.Factory {
+        return NearbyViewModelFactory(provideNearbyRepository(), favouritesDao)
     }
+
 
     private fun provideSearchRepository(): SearchRepository {
         return SearchRepository(RetrofitService.create())
     }
 
-    fun provideSearchViewModelFactory(): ViewModelProvider.Factory {
-        return SearchViewModelFactory(provideSearchRepository())
+    fun provideSearchViewModelFactory(favouritesDao: FavouritesDao): ViewModelProvider.Factory {
+        return SearchViewModelFactory(provideSearchRepository(), favouritesDao)
+    }
+
+    fun provideFavouritesViewModelFactory(favouritesDao: FavouritesDao): ViewModelProvider.Factory {
+        return FavouritesViewModelFactory(favouritesDao)
     }
 }

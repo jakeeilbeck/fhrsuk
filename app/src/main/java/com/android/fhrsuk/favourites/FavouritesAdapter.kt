@@ -1,4 +1,4 @@
-package com.android.fhrsuk.adapters
+package com.android.fhrsuk.favourites
 
 import android.app.Dialog
 import android.content.Context
@@ -7,56 +7,57 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.Button
 import android.widget.ImageView
+import androidx.recyclerview.widget.ListAdapter
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.fhrsuk.R
 import com.android.fhrsuk.databinding.ListItemBinding
-import com.android.fhrsuk.models.Establishments
+import com.android.fhrsuk.adapters.RecyclerAdapterUtils
 
-class RecyclerViewAdapter(private var context: Context, val favouritesClick: (Establishments?) -> Unit) :
-    PagingDataAdapter<Establishments, RecyclerViewAdapter.ViewHolder>(diffCallback) {
+
+//class FavouritesAdapter(private var context: Context, private val dataSet: List<FavouritesEstablishmentsTable>, val favouritesClick: (FavouritesEstablishmentsTable?) -> Unit):
+class FavouritesAdapter(private var context: Context, val favouritesClick: (FavouritesTable?) -> Unit):
+    ListAdapter<FavouritesTable, FavouritesAdapter.ViewHolder>(diffCallback) {
 
     private val adapterUtils = RecyclerAdapterUtils(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val inflater = LayoutInflater.from(context)
+        val inflater = LayoutInflater.from(parent.context)
         val listItemBinding = ListItemBinding.inflate(inflater, parent, false)
         return ViewHolder(listItemBinding)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val establishmentDetail: Establishments? = getItem(position)
+        val establishmentDetail: FavouritesTable? = getItem(position)
         viewHolder.nameTextView.text = establishmentDetail!!.businessName
-        viewHolder.ratingTextView.text = adapterUtils.getRating(establishmentDetail.ratingValue)
-        viewHolder.inspectionDateTextView.text = adapterUtils.getDate(establishmentDetail.ratingValue, establishmentDetail.ratingDate)
+        viewHolder.ratingTextView.text = adapterUtils.getRating(establishmentDetail.ratingValue!!)
+        viewHolder.inspectionDateTextView.text = adapterUtils.getDate(establishmentDetail.ratingValue!!, establishmentDetail.ratingDate!!)
         viewHolder.address1TextView.text = establishmentDetail.addressLine1
         viewHolder.address2TextView.text = establishmentDetail.addressLine2
         viewHolder.postcodeTextView.text = establishmentDetail.postCode
         viewHolder.businessTypeTextView.text = establishmentDetail.businessType
-        viewHolder.scoreBreakdownHygiene.text = adapterUtils.getBreakdownHygiene(establishmentDetail.scores.hygiene)
-        viewHolder.scoreBreakdownStructural.text = adapterUtils.getBreakdownStructural(establishmentDetail.scores.structural)
-        viewHolder.scoreBreakdownManagement.text = adapterUtils.getBreakdownManagement(establishmentDetail.scores.confidenceInManagement)
+        viewHolder.scoreBreakdownHygiene.text = adapterUtils.getBreakdownHygiene(establishmentDetail.hygiene)
+        viewHolder.scoreBreakdownStructural.text = adapterUtils.getBreakdownStructural(establishmentDetail.structural)
+        viewHolder.scoreBreakdownManagement.text = adapterUtils.getBreakdownManagement(establishmentDetail.confidenceInManagement)
 
         //Set rating background square colour based on rating value
         val ratingBg = viewHolder.ratingTextView.background as GradientDrawable
-        ratingBg.setColor(adapterUtils.getRatingBgColour(establishmentDetail.ratingValue))
+        ratingBg.setColor(adapterUtils.getRatingBgColour(establishmentDetail.ratingValue!!))
 
         viewHolder.cardView.setOnClickListener {
             //Current expanded state
-            val expanded: Boolean = establishmentDetail.isExpanded
+            val expanded: Boolean = establishmentDetail.itemExpanded
             //Update the expanded state
-            establishmentDetail.isExpanded = !expanded
+            establishmentDetail.itemExpanded = !expanded
 
             notifyItemChanged(position)
         }
 
-        //Item expanded state
-        val expanded: Boolean = establishmentDetail.isExpanded
+//        Item expanded state
+        val expanded: Boolean = establishmentDetail.itemExpanded
         //Set the visibility based on state and animate indicator arrow icon
         if (expanded) {
             viewHolder.expandableAdditionalInfo.visibility = View.VISIBLE
@@ -74,20 +75,19 @@ class RecyclerViewAdapter(private var context: Context, val favouritesClick: (Es
             dialog.setContentView(R.layout.ratings_breakdown_info_dialog)
             dialog.show()
         }
-
     }
 
     companion object {
-        private val diffCallback = object : DiffUtil.ItemCallback<Establishments>() {
+        private val diffCallback = object : DiffUtil.ItemCallback<FavouritesTable>() {
 
             override fun areItemsTheSame(
-                oldItem: Establishments,
-                newItem: Establishments
+                oldItem: FavouritesTable,
+                newItem: FavouritesTable
             ): Boolean = oldItem.fHRSID == newItem.fHRSID
 
             override fun areContentsTheSame(
-                oldItem: Establishments,
-                newItem: Establishments
+                oldItem: FavouritesTable,
+                newItem: FavouritesTable
             ): Boolean = oldItem == newItem
 
         }
