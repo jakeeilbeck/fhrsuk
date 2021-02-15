@@ -27,4 +27,6 @@
     <color name="rating0">#6E2F23</color>
     <color name="ratingNa">#2c3e50</color>
 
+    <color name="favouriteIcon">#E10F49</color>
+
 </resources>
