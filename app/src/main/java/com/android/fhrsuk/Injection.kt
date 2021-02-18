@@ -21,7 +21,6 @@ object Injection {
         return NearbyViewModelFactory(provideNearbyRepository(), favouritesDao)
     }
 
-
     private fun provideSearchRepository(): SearchRepository {
         return SearchRepository(RetrofitService.create())
     }

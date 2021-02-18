@@ -28,6 +28,7 @@ class FavouritesViewModel(private val favouritesDatabase: FavouritesDao) : ViewM
         }
     }
 
+    //Add favourite, or if it is already added, remove it
     private suspend fun addRemove(favourite: FavouritesTable){
         if(favouritesDatabase.checkExists(favourite.fHRSID) == 0){
             favouritesDatabase.insert(favourite)

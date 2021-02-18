@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.android.fhrsuk.Injection
 import com.android.fhrsuk.R
+import com.android.fhrsuk.adapters.FavouritesAdapter
 import com.android.fhrsuk.databinding.FragmentFavouritesBinding
 import com.android.fhrsuk.favourites.data.FavouritesDatabase
 import com.android.fhrsuk.favourites.data.FavouritesTable
@@ -86,7 +87,7 @@ class FavouritesFragment: Fragment(R.layout.fragment_favourites) {
         favouritesViewModel.addRemoveFromFavourites(establishment)
     }
 
-    fun scrollToTop(){
+    private fun scrollToTop(){
         binding.favouritesRecyclerView.scrollToPosition(0)
     }
 

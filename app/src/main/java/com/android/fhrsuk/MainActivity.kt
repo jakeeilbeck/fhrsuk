@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity(), FragmentVisibleListener {
 
         viewPager2.adapter = pagerAdapter
 
+        //Setting checked on the active position greys out the unchecked positions
         viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 when (position) {

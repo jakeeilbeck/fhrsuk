@@ -1,4 +1,4 @@
-package com.android.fhrsuk.favourites
+package com.android.fhrsuk.adapters
 
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
@@ -12,7 +12,6 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.fhrsuk.databinding.ListItemBinding
-import com.android.fhrsuk.adapters.RecyclerAdapterUtils
 import com.android.fhrsuk.favourites.data.FavouritesTable
 
 class FavouritesAdapter(private var context: Context, val favouritesClick: (FavouritesTable?) -> Unit):

@@ -30,33 +30,6 @@ class NearbyViewModel(private val repository: NearbyRepository,
 
     private var filterExpanded: Boolean = false
 
-    fun addRemoveFromFavourites(favourite: Establishments?){
-        viewModelScope.launch {
-            val newFavourite = FavouritesTable(
-                favourite?.fHRSID,
-                favourite?.businessName,
-                favourite?.businessType,
-                favourite?.addressLine1,
-                favourite?.addressLine2,
-                favourite?.postCode,
-                favourite?.ratingValue,
-                favourite?.ratingDate,
-                favourite?.scores?.hygiene,
-                favourite?.scores?.structural,
-                favourite?.scores?.confidenceInManagement,
-                System.currentTimeMillis())
-            addRemove(newFavourite)
-        }
-    }
-
-    private suspend fun addRemove(favourite: FavouritesTable){
-        if(favouritesDatabase.checkExists(favourite.fHRSID) == 0){
-            favouritesDatabase.insert(favourite)
-        }else{
-            favouritesDatabase.delete(favourite)
-        }
-    }
-
     fun searchEstablishments(): Flow<PagingData<Establishments>> {
         val lastResult = currentSearchResult
         if ((longitude + latitude == currentQueryValue) && (lastResult != null)) {
@@ -110,5 +83,33 @@ class NearbyViewModel(private val repository: NearbyRepository,
 
     fun setFilterVisibilityStatus(status: Boolean){
         filterExpanded = status
+    }
+
+    fun addRemoveFromFavourites(favourite: Establishments?){
+        viewModelScope.launch {
+            val newFavourite = FavouritesTable(
+                favourite?.fHRSID,
+                favourite?.businessName,
+                favourite?.businessType,
+                favourite?.addressLine1,
+                favourite?.addressLine2,
+                favourite?.postCode,
+                favourite?.ratingValue,
+                favourite?.ratingDate,
+                favourite?.scores?.hygiene,
+                favourite?.scores?.structural,
+                favourite?.scores?.confidenceInManagement,
+                System.currentTimeMillis())
+            addRemove(newFavourite)
+        }
+    }
+
+    //Add favourite, or if it is already added, remove it
+    private suspend fun addRemove(favourite: FavouritesTable){
+        if(favouritesDatabase.checkExists(favourite.fHRSID) == 0){
+            favouritesDatabase.insert(favourite)
+        }else{
+            favouritesDatabase.delete(favourite)
+        }
     }
 }

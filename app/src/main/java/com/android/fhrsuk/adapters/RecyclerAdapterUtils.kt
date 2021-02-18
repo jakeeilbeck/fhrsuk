@@ -125,12 +125,4 @@ class RecyclerAdapterUtils(var context: Context) {
         }
         return ContextCompat.getColor(context, ratingColourResourceId)
     }
-
-    fun setFavouriteColour(isFavourite: Boolean): Int{
-        return if (isFavourite){
-            ContextCompat.getColor(context, R.color.favouriteIcon)
-        }else{
-            ContextCompat.getColor(context, R.color.colorPrimary)
-        }
-    }
 }

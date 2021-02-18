@@ -360,6 +360,8 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
         super.onDestroyView()
     }
 
+    /*Permissions logic below*/
+
     //Check if permissions are granted
     private fun checkPermissions() =
         ActivityCompat.checkSelfPermission(

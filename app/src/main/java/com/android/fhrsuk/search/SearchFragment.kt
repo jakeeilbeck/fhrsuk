@@ -30,7 +30,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private lateinit var searchViewModel: SearchViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RecyclerViewAdapter
-//    private var searchBinding: FragmentSearchBinding? = null
     private var searchJob: Job? = null
 
     private var _binding: FragmentSearchBinding? = null
@@ -54,9 +53,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-//        val binding = FragmentSearchBinding.bind(view)
-//        searchBinding = binding
 
         val searchNameText = binding.editTextName
         val searchLocationText = binding.editTextLocation

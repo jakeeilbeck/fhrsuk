@@ -24,9 +24,11 @@ class SearchViewModel(private val repository: SearchRepository,
 
     fun searchEstablishments(): Flow<PagingData<Establishments>> {
         val lastResult = currentSearchResult
+
         if ((name + location == currentQueryValue) && (lastResult != null)) {
             return lastResult
         }
+
         currentQueryValue = name + location
 
         val newResult: Flow<PagingData<Establishments>> =
@@ -63,6 +65,7 @@ class SearchViewModel(private val repository: SearchRepository,
         }
     }
 
+    //Add favourite, or if it is already added, remove it
     private suspend fun addRemove(favourite: FavouritesTable){
         if(favouritesDatabase.checkExists(favourite.fHRSID) == 0){
             favouritesDatabase.insert(favourite)
