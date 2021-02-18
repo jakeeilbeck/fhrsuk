@@ -1,20 +1,16 @@
 package com.android.fhrsuk.adapters
 
-import android.app.Dialog
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.android.fhrsuk.R
 import com.android.fhrsuk.databinding.ListItemBinding
 import com.android.fhrsuk.models.Establishments
 
@@ -65,16 +61,6 @@ class RecyclerViewAdapter(private var context: Context, val favouritesClick: (Es
             viewHolder.indicatorIcon.animate().rotation(0F).start()
             viewHolder.expandableAdditionalInfo.visibility = View.GONE
         }
-
-        //dialog box to give a explanation on each of the rating categories
-        viewHolder.infoIcon.setOnClickListener {
-            val dialog = Dialog(context)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setCancelable(true)
-            dialog.setContentView(R.layout.ratings_breakdown_info_dialog)
-            dialog.show()
-        }
-
     }
 
     companion object {
@@ -108,7 +94,6 @@ class RecyclerViewAdapter(private var context: Context, val favouritesClick: (Es
         val scoreBreakdownStructural: TextView = listItemBinding.scoreBreakdownStructural
         val scoreBreakdownManagement: TextView = listItemBinding.scoreBreakdownManagement
         val indicatorIcon: ImageView = listItemBinding.expandCollapseIndicator
-        val infoIcon: ImageView = listItemBinding.butonInfoDialog
         init {
             listItemBinding.addFavButton.setOnClickListener {
                 favouritesClick.invoke(getItem(layoutPosition))

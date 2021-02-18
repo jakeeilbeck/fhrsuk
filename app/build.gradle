@@ -1,10 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    viewBinding.enabled = true
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
     defaultConfig {
@@ -14,6 +12,9 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildFeatures{
+        viewBinding true
     }
     buildTypes {
         release {
@@ -58,7 +59,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0"
 
     //paging
-    implementation "androidx.paging:paging-runtime:3.0.0-beta01"
+    implementation "androidx.paging:paging-runtime-ktx:3.0.0-beta01"
 
     //recyclerView
     implementation "androidx.recyclerview:recyclerview:1.2.0-beta01"
@@ -80,6 +81,8 @@ dependencies {
     implementation "androidx.room:room-runtime:2.2.6"
     implementation "androidx.room:room-ktx:2.2.6"
     kapt "androidx.room:room-compiler:2.2.6"
+
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.4.30"
 
     // Required -- JUnit 4 framework
     testImplementation 'junit:junit:4.13'

@@ -1,4 +1,4 @@
-package com.android.fhrsuk.favourites
+package com.android.fhrsuk.favourites.data
 
 import android.content.Context
 import androidx.room.Database
@@ -14,7 +14,7 @@ abstract class FavouritesDatabase: RoomDatabase() {
         @Volatile
         private var INSTANCE: FavouritesDatabase? = null
 
-        fun getInstance(context: Context): FavouritesDatabase{
+        fun getInstance(context: Context): FavouritesDatabase {
             synchronized(this){
                 var instance = INSTANCE
 

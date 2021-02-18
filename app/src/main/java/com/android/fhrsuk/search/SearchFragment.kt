@@ -3,7 +3,9 @@ package com.android.fhrsuk.search
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.view.isVisible
@@ -16,10 +18,9 @@ import com.android.fhrsuk.Injection
 import com.android.fhrsuk.R
 import com.android.fhrsuk.adapters.RecyclerViewAdapter
 import com.android.fhrsuk.databinding.FragmentSearchBinding
-import com.android.fhrsuk.favourites.FavouritesDatabase
+import com.android.fhrsuk.favourites.data.FavouritesDatabase
 import com.android.fhrsuk.models.Establishments
 import com.android.fhrsuk.search.loadingState.SearchLoadStateAdapter
-import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -29,8 +30,11 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private lateinit var searchViewModel: SearchViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RecyclerViewAdapter
-    private var searchBinding: FragmentSearchBinding? = null
+//    private var searchBinding: FragmentSearchBinding? = null
     private var searchJob: Job? = null
+
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,16 +47,21 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             .get(SearchViewModel::class.java)
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val binding = FragmentSearchBinding.bind(view)
-        searchBinding = binding
+//        val binding = FragmentSearchBinding.bind(view)
+//        searchBinding = binding
 
-        val searchNameText = searchBinding?.editTextName
-        val searchLocationText = searchBinding?.editTextLocation
-        val searchButton = searchBinding?.buttonSearch
-        val fabUp = searchBinding?.fabUp
+        val searchNameText = binding.editTextName
+        val searchLocationText = binding.editTextLocation
+        val searchButton = binding.buttonSearch
+        val fabUp = binding.fabUp
 
         var searchRestaurantName: String
         var searchLocation: String
@@ -62,16 +71,16 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
 
         //fabUp will only be visible after the user has started scrolling
-        fabUp?.hide()
+        fabUp.hide()
 
         if (searchViewModel.getCurrentSearchResult() != null){
             getEstablishments(false)
         }
 
-        searchButton?.setOnClickListener {
+        searchButton.setOnClickListener {
 
-            searchRestaurantName = searchNameText?.text.toString().trim()
-            searchLocation = searchLocationText?.text.toString().trim()
+            searchRestaurantName = searchNameText.text.toString().trim()
+            searchLocation = searchLocationText.text.toString().trim()
 
             if (searchRestaurantName.isEmpty() && searchLocation.isEmpty()){
                 //Hide keyboard first to make Toast more visible (if open)
@@ -88,8 +97,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 getEstablishments(true)
 
                 //clear editText focus on search
-                searchNameText?.clearFocus()
-                searchLocationText?.clearFocus()
+                searchNameText.clearFocus()
+                searchLocationText.clearFocus()
 
                 hideKeyboard(view)
             }
@@ -105,17 +114,17 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (recyclerView.computeVerticalScrollOffset() > 1500) {
-                    fabUp?.show()
+                    fabUp.show()
                 } else {
-                    fabUp?.hide()
+                    fabUp.hide()
                 }
             }
         })
 
         //scroll to top of list on click
-        fabUp?.setOnClickListener { lifecycleScope.launch { recyclerView.scrollToPosition(0) } }
+        fabUp.setOnClickListener { lifecycleScope.launch { recyclerView.scrollToPosition(0) } }
 
-        searchBinding?.retryButton?.setOnClickListener { adapter.retry() }
+        binding.retryButton.setOnClickListener { adapter.retry() }
     }
 
     private fun favouritesOnClick(establishment: Establishments?){
@@ -150,7 +159,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private fun initAdapter() {
         //Display progressBar or retry button for loading of data or failure of loading
-        searchBinding?.searchRecyclerView?.adapter = adapter.withLoadStateHeaderAndFooter(
+        binding.searchRecyclerView.adapter = adapter.withLoadStateHeaderAndFooter(
             header = SearchLoadStateAdapter { adapter.retry() },
             footer = SearchLoadStateAdapter { adapter.retry() }
         )
@@ -158,24 +167,24 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         //show / hide the header or footer views based on loading state
         adapter.addLoadStateListener { loadState ->
 
-            searchBinding?.searchRecyclerView?.isVisible = loadState.source.refresh is LoadState.NotLoading
+            binding.searchRecyclerView.isVisible = loadState.source.refresh is LoadState.NotLoading
             // Show progress bar during initial load or refresh.
-            searchBinding?.progressbarSearch?.isVisible = loadState.source.refresh is LoadState.Loading
+            binding.progressbarSearch.isVisible = loadState.source.refresh is LoadState.Loading
             // Show the retry button if initial load or refresh fails.
-            searchBinding?.retryButton?.isVisible = loadState.source.refresh is LoadState.Error
+            binding.retryButton.isVisible = loadState.source.refresh is LoadState.Error
             // Show message if no results
             if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && adapter.itemCount <1){
                 recyclerView.isVisible = false
-                no_results_text.isVisible = true
+                binding.noResultsText.isVisible = true
             }else{
-                no_results_text.isVisible = false
+                binding.noResultsText.isVisible = false
             }
 
         }
     }
 
     override fun onDestroyView() {
-        searchBinding = null
+        _binding = null
         super.onDestroyView()
     }
 }

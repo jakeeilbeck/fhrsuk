@@ -4,15 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.android.fhrsuk.favourites.FavouritesDao
-import com.android.fhrsuk.favourites.FavouritesTable
+import com.android.fhrsuk.favourites.data.FavouritesDao
+import com.android.fhrsuk.favourites.data.FavouritesTable
 import com.android.fhrsuk.models.Establishments
 import com.android.fhrsuk.search.data.SearchRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class SearchViewModel(private val repository: SearchRepository,
-                      private val favouritesDatabase: FavouritesDao) : ViewModel() {
+                      private val favouritesDatabase: FavouritesDao
+) : ViewModel() {
 
     private lateinit var name: String
     private lateinit var location: String

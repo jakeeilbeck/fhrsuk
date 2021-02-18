@@ -54,6 +54,11 @@
     <string name="fab_filter4_description">FAB: Filter results to 4 ratings</string>
     <string name="fab_filter5_description">FAB: Filter results to 5 ratings</string>
     <string name="fab_filter_clear_description">FAB: Clear filter</string>
+
     <string name="favourites_button_content_description">Favourites Button</string>
+
+    <string name="menu_nearby">Nearby</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_favourites">Favourites</string>
 
 </resources>

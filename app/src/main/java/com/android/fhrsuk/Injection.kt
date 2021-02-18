@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.android.fhrsuk.nearbyList.NearbyViewModelFactory
 import com.android.fhrsuk.nearbyList.data.NearbyRepository
 import com.android.fhrsuk.api.RetrofitService
-import com.android.fhrsuk.favourites.FavouritesDao
+import com.android.fhrsuk.favourites.data.FavouritesDao
 import com.android.fhrsuk.favourites.FavouritesViewModelFactory
 import com.android.fhrsuk.search.data.SearchRepository
 import com.android.fhrsuk.search.SearchViewModelFactory

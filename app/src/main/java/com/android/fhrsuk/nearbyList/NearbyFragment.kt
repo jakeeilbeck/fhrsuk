@@ -8,7 +8,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.core.app.ActivityCompat
@@ -25,12 +27,11 @@ import com.android.fhrsuk.Injection
 import com.android.fhrsuk.R
 import com.android.fhrsuk.adapters.RecyclerViewAdapter
 import com.android.fhrsuk.databinding.FragmentNearbyListBinding
-import com.android.fhrsuk.favourites.FavouritesDatabase
+import com.android.fhrsuk.favourites.data.FavouritesDatabase
 import com.android.fhrsuk.models.Establishments
 import com.android.fhrsuk.nearbyList.loadingState.NearbyLoadStateAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -55,11 +56,14 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
     private lateinit var nearbyViewModel: NearbyViewModel
     private lateinit var locationServices: LocationServices
     private var searchJob: Job? = null
-    private var nearbyBinding: FragmentNearbyListBinding? = null
 
     private lateinit var location: Location
 
     var fragmentVisibleListener: FragmentVisibleListener? = null
+
+    private var _binding: FragmentNearbyListBinding? = null
+    private val binding get() = _binding!!
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,22 +76,24 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
             .get(NearbyViewModel::class.java)
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentNearbyListBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val binding = FragmentNearbyListBinding.bind(view)
-        nearbyBinding = binding
 
         swipeRefresh = binding.swipeRefresh
         val fabUp: FloatingActionButton = binding.fabUp
         val fabFilter: FloatingActionButton = binding.fabFilter
-        val filterClear = nearbyBinding?.filterClear
-        val filter0 = nearbyBinding?.filterRating0
-        val filter1 = nearbyBinding?.filterRating1
-        val filter2 = nearbyBinding?.filterRating2
-        val filter3 = nearbyBinding?.filterRating3
-        val filter4 = nearbyBinding?.filterRating4
-        val filter5 = nearbyBinding?.filterRating5
+        val filterClear = binding.filterClear
+        val filter0 = binding.filterRating0
+        val filter1 = binding.filterRating1
+        val filter2 = binding.filterRating2
+        val filter3 = binding.filterRating3
+        val filter4 = binding.filterRating4
+        val filter5 = binding.filterRating5
 
         adapter = RecyclerViewAdapter(requireContext()) { establishment: Establishments? ->
             favouritesOnClick(establishment)
@@ -151,7 +157,7 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
         }
 
         //Click listeners for each filter option
-        filterClear?.setOnClickListener {
+        filterClear.setOnClickListener {
             filterList("clear")
         }
 
@@ -159,23 +165,23 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
             filterList("0")
         }
 
-        filter1?.setOnClickListener {
+        filter1.setOnClickListener {
             filterList("1")
         }
 
-        filter2?.setOnClickListener {
+        filter2.setOnClickListener {
             filterList("2")
         }
 
-        filter3?.setOnClickListener {
+        filter3.setOnClickListener {
             filterList("3")
         }
 
-        filter4?.setOnClickListener {
+        filter4.setOnClickListener {
             filterList("4")
         }
 
-        filter5?.setOnClickListener {
+        filter5.setOnClickListener {
             filterList("5")
         }
 
@@ -188,7 +194,7 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
             scrollToTop()
         }
 
-        nearbyBinding?.retryButton?.setOnClickListener { adapter.retry() }
+        binding.retryButton.setOnClickListener { adapter.retry() }
     }
 
     private fun favouritesOnClick(establishment: Establishments?){
@@ -221,40 +227,40 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
         val animFadeIn: Animation = AnimationUtils.loadAnimation(this.context, android.R.anim.fade_in)
         animFadeIn.duration = 350
 
-        nearbyBinding?.filterClear?.isVisible = true
-        nearbyBinding?.filterClear?.startAnimation(animFadeIn)
-        nearbyBinding?.filterRating0?.isVisible = true
-        nearbyBinding?.filterRating0?.startAnimation(animFadeIn)
-        nearbyBinding?.filterRating1?.isVisible = true
-        nearbyBinding?.filterRating1?.startAnimation(animFadeIn)
-        nearbyBinding?.filterRating2?.isVisible = true
-        nearbyBinding?.filterRating2?.startAnimation(animFadeIn)
-        nearbyBinding?.filterRating3?.isVisible = true
-        nearbyBinding?.filterRating3?.startAnimation(animFadeIn)
-        nearbyBinding?.filterRating4?.isVisible = true
-        nearbyBinding?.filterRating4?.startAnimation(animFadeIn)
-        nearbyBinding?.filterRating5?.isVisible = true
-        nearbyBinding?.filterRating5?.startAnimation(animFadeIn)
+        binding.filterClear.isVisible = true
+        binding.filterClear.startAnimation(animFadeIn)
+        binding.filterRating0?.isVisible = true
+        binding.filterRating0?.startAnimation(animFadeIn)
+        binding.filterRating1.isVisible = true
+        binding.filterRating1.startAnimation(animFadeIn)
+        binding.filterRating2.isVisible = true
+        binding.filterRating2.startAnimation(animFadeIn)
+        binding.filterRating3.isVisible = true
+        binding.filterRating3.startAnimation(animFadeIn)
+        binding.filterRating4.isVisible = true
+        binding.filterRating4.startAnimation(animFadeIn)
+        binding.filterRating5.isVisible = true
+        binding.filterRating5.startAnimation(animFadeIn)
     }
 
     private fun hideFilterOptions(){
         val animFadeOut: Animation = AnimationUtils.loadAnimation(this.context, android.R.anim.fade_out)
         animFadeOut.duration = 100
 
-        nearbyBinding?.filterClear?.isVisible = false
-        nearbyBinding?.filterClear?.startAnimation(animFadeOut)
-        nearbyBinding?.filterRating0?.isVisible = false
-        nearbyBinding?.filterRating0?.startAnimation(animFadeOut)
-        nearbyBinding?.filterRating1?.isVisible = false
-        nearbyBinding?.filterRating1?.startAnimation(animFadeOut)
-        nearbyBinding?.filterRating2?.isVisible = false
-        nearbyBinding?.filterRating2?.startAnimation(animFadeOut)
-        nearbyBinding?.filterRating3?.isVisible = false
-        nearbyBinding?.filterRating3?.startAnimation(animFadeOut)
-        nearbyBinding?.filterRating4?.isVisible = false
-        nearbyBinding?.filterRating4?.startAnimation(animFadeOut)
-        nearbyBinding?.filterRating5?.isVisible = false
-        nearbyBinding?.filterRating5?.startAnimation(animFadeOut)
+        binding.filterClear.isVisible = false
+        binding.filterClear.startAnimation(animFadeOut)
+        binding.filterRating0?.isVisible = false
+        binding.filterRating0?.startAnimation(animFadeOut)
+        binding.filterRating1.isVisible = false
+        binding.filterRating1.startAnimation(animFadeOut)
+        binding.filterRating2.isVisible = false
+        binding.filterRating2.startAnimation(animFadeOut)
+        binding.filterRating3.isVisible = false
+        binding.filterRating3.startAnimation(animFadeOut)
+        binding.filterRating4.isVisible = false
+        binding.filterRating4.startAnimation(animFadeOut)
+        binding.filterRating5.isVisible = false
+        binding.filterRating5.startAnimation(animFadeOut)
     }
 
     private fun filterList(filter: String) {
@@ -274,7 +280,7 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
                 .distinctUntilChangedBy { it.refresh }
                 // Only react to cases where Remote REFRESH completes i.e., NotLoading.
                 .filter { it.refresh is LoadState.NotLoading }
-                .collect { nearbyBinding?.listRecyclerView?.scrollToPosition(0) }
+                .collect { binding.listRecyclerView.scrollToPosition(0) }
         }
     }
 
@@ -313,7 +319,7 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
 
     private fun initAdapter() {
         //Display progressBar or retry button for loading of data or failure of loading
-        nearbyBinding?.listRecyclerView?.adapter = adapter.withLoadStateHeaderAndFooter(
+        binding.listRecyclerView.adapter = adapter.withLoadStateHeaderAndFooter(
             header = NearbyLoadStateAdapter { adapter.retry() },
             footer = NearbyLoadStateAdapter { adapter.retry() }
         )
@@ -321,19 +327,19 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
         //show / hide the header or footer views based on loading state
         adapter.addLoadStateListener { loadState ->
             // Only show the list if refresh succeeds.
-            nearbyBinding?.listRecyclerView?.isVisible =
+            binding.listRecyclerView.isVisible =
                 loadState.source.refresh is LoadState.NotLoading
             // Show progress bar during initial load or refresh.
-            nearbyBinding?.progressbarList?.isVisible =
+            binding.progressbarList.isVisible =
                 loadState.source.refresh is LoadState.Loading
             // Show the retry button if initial load or refresh fails.
-            nearbyBinding?.retryButton?.isVisible = loadState.source.refresh is LoadState.Error
+            binding.retryButton.isVisible = loadState.source.refresh is LoadState.Error
             // Show message if no results
             if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && adapter.itemCount < 1) {
                 recyclerView.isVisible = false
-                no_results_text.isVisible = true
+                binding.noResultsText.isVisible = true
             } else {
-                no_results_text.isVisible = false
+                binding.noResultsText.isVisible = false
             }
         }
     }
@@ -350,7 +356,7 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
     }
 
     override fun onDestroyView() {
-        nearbyBinding = null
+        _binding = null
         super.onDestroyView()
     }
 

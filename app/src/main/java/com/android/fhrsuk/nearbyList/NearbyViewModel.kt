@@ -6,15 +6,16 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
-import com.android.fhrsuk.favourites.FavouritesDao
-import com.android.fhrsuk.favourites.FavouritesTable
+import com.android.fhrsuk.favourites.data.FavouritesDao
+import com.android.fhrsuk.favourites.data.FavouritesTable
 import com.android.fhrsuk.models.Establishments
 import com.android.fhrsuk.nearbyList.data.NearbyRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class NearbyViewModel(private val repository: NearbyRepository,
-                      private val favouritesDatabase: FavouritesDao)
+                      private val favouritesDatabase: FavouritesDao
+)
     : ViewModel() {
 
     private lateinit var longitude: String

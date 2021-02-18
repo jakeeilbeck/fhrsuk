@@ -1,4 +1,4 @@
-package com.android.fhrsuk.favourites
+package com.android.fhrsuk.favourites.data
 
 import androidx.room.*
 

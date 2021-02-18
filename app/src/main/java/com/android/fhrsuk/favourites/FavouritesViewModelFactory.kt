@@ -2,8 +2,7 @@ package com.android.fhrsuk.favourites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.android.fhrsuk.search.SearchViewModel
-import com.android.fhrsuk.search.data.SearchRepository
+import com.android.fhrsuk.favourites.data.FavouritesDao
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class FavouritesViewModelFactory (private val favouritesDatabase: FavouritesDao) : ViewModelProvider.Factory {

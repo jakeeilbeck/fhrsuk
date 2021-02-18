@@ -3,6 +3,8 @@ package com.android.fhrsuk.favourites
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.fhrsuk.favourites.data.FavouritesDao
+import com.android.fhrsuk.favourites.data.FavouritesTable
 import kotlinx.coroutines.launch
 
 class FavouritesViewModel(private val favouritesDatabase: FavouritesDao) : ViewModel() {

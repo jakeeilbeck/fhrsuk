@@ -2,7 +2,9 @@ package com.android.fhrsuk.favourites
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -11,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.fhrsuk.Injection
 import com.android.fhrsuk.R
 import com.android.fhrsuk.databinding.FragmentFavouritesBinding
+import com.android.fhrsuk.favourites.data.FavouritesDatabase
+import com.android.fhrsuk.favourites.data.FavouritesTable
 import kotlinx.coroutines.launch
 
 class FavouritesFragment: Fragment(R.layout.fragment_favourites) {
@@ -18,7 +22,9 @@ class FavouritesFragment: Fragment(R.layout.fragment_favourites) {
     private lateinit var favouritesViewModel: FavouritesViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: FavouritesAdapter
-    private var favouriteBinding: FragmentFavouritesBinding? = null
+
+    private var _binding: FragmentFavouritesBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,11 +37,14 @@ class FavouritesFragment: Fragment(R.layout.fragment_favourites) {
             .get(FavouritesViewModel::class.java)
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentFavouritesBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val binding = FragmentFavouritesBinding.bind(view)
-        favouriteBinding = binding
         recyclerView = binding.favouritesRecyclerView
         val progressBar = binding.progressbarFavourites
         val fabUp = binding.fabUp
@@ -78,6 +87,11 @@ class FavouritesFragment: Fragment(R.layout.fragment_favourites) {
     }
 
     fun scrollToTop(){
-        favouriteBinding?.favouritesRecyclerView?.scrollToPosition(0)
+        binding.favouritesRecyclerView.scrollToPosition(0)
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }
