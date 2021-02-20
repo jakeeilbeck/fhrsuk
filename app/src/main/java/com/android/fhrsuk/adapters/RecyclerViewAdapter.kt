@@ -95,7 +95,7 @@ class RecyclerViewAdapter(private var context: Context, val favouritesClick: (Es
         val scoreBreakdownManagement: TextView = listItemBinding.scoreBreakdownManagement
         val indicatorIcon: ImageView = listItemBinding.expandCollapseIndicator
         init {
-            listItemBinding.addFavButton.setOnClickListener {
+            listItemBinding.favButton.setOnClickListener {
                 favouritesClick.invoke(getItem(layoutPosition))
             }
         }
