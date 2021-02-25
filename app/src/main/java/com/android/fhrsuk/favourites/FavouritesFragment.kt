@@ -1,10 +1,10 @@
 package com.android.fhrsuk.favourites
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -71,6 +71,7 @@ class FavouritesFragment: Fragment(R.layout.fragment_favourites) {
 
         adapter = FavouritesAdapter(requireContext()) { establishment: FavouritesTable? ->
             favouritesOnClick(establishment)
+            Toast.makeText(requireContext(), getString(R.string.removed_from_favourites),Toast.LENGTH_SHORT).show()
         }
 
         lifecycleScope.launch {

@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -195,10 +196,41 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
         }
 
         binding.retryButton.setOnClickListener { adapter.retry() }
+
+        //Set to null so Toast doesn't show with previous value on configuration change
+        nearbyViewModel.setFavouriteExistsNull()
+
+        //Show Toast when adding/removing favourites
+        nearbyViewModel.favouriteExists.observe(viewLifecycleOwner, { favouriteExists ->
+            if (favouriteExists == null){
+                //Don't show anything
+            }else {
+                if (favouriteExists) {
+                    displayFavouriteToast(true)
+                } else {
+                    displayFavouriteToast(false)
+                }
+            }
+        })
+    }
+
+    private fun displayFavouriteToast(favouriteExists: Boolean){
+        if (favouriteExists) {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.removed_from_favourites),
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.added_to_favourites),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun favouritesOnClick(establishment: Establishments?){
-        Log.i("NearbyFragment", "favButton?.setOnClickListener")
         nearbyViewModel.addRemoveFromFavourites(establishment)
     }
 

@@ -1,5 +1,6 @@
 package com.android.fhrsuk.search
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -21,6 +22,9 @@ class SearchViewModel(private val repository: SearchRepository,
     private var currentQueryValue: String? = null
 
     private var currentSearchResult: Flow<PagingData<Establishments>>? = null
+
+    //observer by fragment to display Toast on favourite add/remove
+    var favouriteExists = MutableLiveData<Boolean>(null)
 
     fun searchEstablishments(): Flow<PagingData<Establishments>> {
         val lastResult = currentSearchResult
@@ -66,11 +70,22 @@ class SearchViewModel(private val repository: SearchRepository,
     }
 
     //Add favourite, or if it is already added, remove it
+    //Update favouriteExists so observing fragment can display correct Toast on add/remove
     private suspend fun addRemove(favourite: FavouritesTable){
-        if(favouritesDatabase.checkExists(favourite.fHRSID) == 0){
+        if (!checkFavouriteExists(favourite)){
             favouritesDatabase.insert(favourite)
+            favouriteExists.postValue(false)
         }else{
             favouritesDatabase.delete(favourite)
+            favouriteExists.postValue(true)
         }
+    }
+
+    private suspend fun checkFavouriteExists(favourite: FavouritesTable): Boolean{
+        return favouritesDatabase.checkExists(favourite.fHRSID) != 0
+    }
+
+    fun setFavouriteExistsNull(){
+        favouriteExists.value = null
     }
 }

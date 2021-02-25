@@ -121,6 +121,38 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         fabUp.setOnClickListener { lifecycleScope.launch { recyclerView.scrollToPosition(0) } }
 
         binding.retryButton.setOnClickListener { adapter.retry() }
+
+        //Set to null so Toast doesn't show with previous value on configuration change
+        searchViewModel.setFavouriteExistsNull()
+
+        //Show Toast when adding/removing favourites
+        searchViewModel.favouriteExists.observe(viewLifecycleOwner, { favouriteExists ->
+            if (favouriteExists == null){
+                //Don't show anything
+            }else {
+                if (favouriteExists) {
+                    displayFavouriteToast(true)
+                } else {
+                    displayFavouriteToast(false)
+                }
+            }
+        })
+    }
+
+    private fun displayFavouriteToast(favouriteExists: Boolean){
+        if (favouriteExists) {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.removed_from_favourites),
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.added_to_favourites),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun favouritesOnClick(establishment: Establishments?){
