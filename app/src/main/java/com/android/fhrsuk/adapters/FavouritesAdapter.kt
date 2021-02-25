@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.fhrsuk.databinding.ListItemBinding
 import com.android.fhrsuk.favourites.data.FavouritesTable
 
-class FavouritesAdapter(private var context: Context, val favouritesClick: (FavouritesTable?) -> Unit):
+class FavouritesAdapter(context: Context, val favouritesClick: (FavouritesTable?) -> Unit):
     ListAdapter<FavouritesTable, FavouritesAdapter.ViewHolder>(diffCallback) {
 
     private val adapterUtils = RecyclerAdapterUtils(context)

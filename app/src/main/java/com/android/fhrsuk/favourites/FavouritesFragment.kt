@@ -76,15 +76,14 @@ class FavouritesFragment: Fragment(R.layout.fragment_favourites) {
 
         lifecycleScope.launch {
             favouritesViewModel.getAllFavourites().observe(viewLifecycleOwner, {
-                recyclerView.adapter = adapter
                 adapter.submitList(it)
                 progressBar.isVisible = false
             })
         }
+        recyclerView.adapter = adapter
     }
 
     private fun favouritesOnClick(establishment: FavouritesTable?){
-        Log.i("NearbyFragment", "favButton?.setOnClickListener")
         favouritesViewModel.addRemoveFromFavourites(establishment)
     }
 

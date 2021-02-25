@@ -112,23 +112,26 @@ class MainActivity : AppCompatActivity(), FragmentVisibleListener {
 
         when (item.itemId) {
             R.id.rating_breakdown_info -> {
-                val dialog = Dialog(this)
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-                dialog.setCancelable(true)
-                dialog.setContentView(R.layout.ratings_breakdown_info_dialog)
-                dialog.show()
+                showInfoDialog()
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    //Return to nearby fragment, otherwise exit app
-    override fun onBackPressed() {
+    private fun showInfoDialog(){
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.setContentView(R.layout.ratings_breakdown_info_dialog)
+        dialog.show()
+    }
 
-        if (viewPager2.currentItem == 1) {
-            viewPager2.setCurrentItem(0, true)
-        } else {
+    //Return to previous fragment, or let system handle it if at position 0
+    override fun onBackPressed() {
+        if (viewPager2.currentItem == 0) {
             super.onBackPressed()
+        } else {
+            viewPager2.currentItem = viewPager2.currentItem - 1
         }
     }
 }
