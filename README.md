@@ -20,4 +20,4 @@ This project includes:
 - View Binding
 - Day / Night theme based on phone setting
 
-![Screenshot of nearby view](https://i.imgur.com/yAUmKfq.png) ![Screenshot of search view](https://i.imgur.com/iUC2TjQ.png)
+![Screenshot of nearby view](https://i.imgur.com/kLToCvb.png) ![Screenshot of search view](https://i.imgur.com/iUC2TjQ.png)
