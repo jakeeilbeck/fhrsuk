@@ -19,5 +19,7 @@ This project includes:
 - ViewPager2
 - View Binding
 - Day / Night theme based on phone setting
+- BottomNavigationView
+- Room
 
-![Screenshot of nearby view](https://i.imgur.com/kLToCvb.png) ![Screenshot of search view](https://i.imgur.com/iUC2TjQ.png)
+![Screenshot of nearby view](https://i.imgur.com/763kBpI.png) ![Screenshot of search view](https://i.imgur.com/SRY7fjJ.png) ![Screenshot of favourites view](https://i.imgur.com/bQlk2Kv.png)
