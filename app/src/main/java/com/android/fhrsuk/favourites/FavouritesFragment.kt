@@ -74,12 +74,14 @@ class FavouritesFragment: Fragment(R.layout.fragment_favourites) {
             Toast.makeText(requireContext(), getString(R.string.removed_from_favourites),Toast.LENGTH_SHORT).show()
         }
 
+        adapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+
         lifecycleScope.launch {
             favouritesViewModel.getAllFavourites().observe(viewLifecycleOwner, {
                 adapter.submitList(it)
-                progressBar.isVisible = false
             })
         }
+        progressBar.isVisible = false
         recyclerView.adapter = adapter
     }
 
