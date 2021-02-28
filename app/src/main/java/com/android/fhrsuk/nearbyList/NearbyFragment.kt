@@ -77,7 +77,7 @@ class NearbyFragment : Fragment(R.layout.fragment_nearby_list) {
             .get(NearbyViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentNearbyListBinding.inflate(inflater, container, false)
         return binding.root
     }

@@ -23,7 +23,7 @@ class SearchViewModel(private val repository: SearchRepository,
 
     private var currentSearchResult: Flow<PagingData<Establishments>>? = null
 
-    //observer by fragment to display Toast on favourite add/remove
+    //Observed by fragment to display Toast on favourite add/remove
     var favouriteExists = MutableLiveData<Boolean>(null)
 
     fun searchEstablishments(): Flow<PagingData<Establishments>> {

@@ -38,7 +38,7 @@ class FavouritesFragment: Fragment(R.layout.fragment_favourites) {
             .get(FavouritesViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentFavouritesBinding.inflate(inflater, container, false)
         return binding.root
     }

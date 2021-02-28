@@ -76,7 +76,7 @@ class RecyclerAdapterUtils(var context: Context) {
         }
     }
 
-    //display N/A when rating isn't available
+    //Format non-numerical ratings, and display N/A when rating isn't available
     fun getRating(rating: String): String {
         return when (rating) {
             "Exempt", "AwaitingPublication", "Awaiting Publication", "AwaitingInspection", "Awaiting Inspection" -> {
@@ -94,7 +94,7 @@ class RecyclerAdapterUtils(var context: Context) {
         }
     }
 
-    //If rating isn't available show reason why in place of the date
+    //Format date, and If rating isn't available show reason why in place of the date
     fun getDate(rating: String, ratingDate: String): String {
 
         val currentFormat = ofPattern("yyyy-MM-dd'T'HH:m:ss")
